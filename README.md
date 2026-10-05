@@ -73,14 +73,15 @@ The **Job & Internship Platform** is designed to simplify the recruitment proces
 
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js, TypeScript |
-| Styling | Tailwind CSS |
-| Backend | ASP.NET Core Web API |
+| Frontend | ASP.NET Core MVC + Razor Views |
+| Styling | Tailwind CSS / Bootstrap |
+| Backend | ASP.NET Core MVC |
 | Language | C# |
 | Database | SQL Server |
 | ORM | Entity Framework Core |
-| Authentication | JWT |
-| API Documentation | Swagger |
+| Authentication | ASP.NET Core Identity |
+| Client-side | JavaScript / AJAX |
+| API Documentation | Swagger (if APIs are added) |
 | Version Control | Git & GitHub |
 
 ---
