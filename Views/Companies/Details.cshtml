@@ -1,0 +1,35 @@
+@model Company
+@{ ViewData["Title"] = Model.Name; var jobs = (List<Job>)ViewBag.Jobs; }
+<div class="container py-4">
+    <nav class="small mb-3"><a asp-action="Index"><i class="bi bi-arrow-left me-1"></i>All companies</a></nav>
+    <div class="detail-head mb-4">
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+            <div class="logo lg" style="background:@Model.Color">@Model.Initials</div>
+            <div class="flex-grow-1">
+                <h1 class="h2 mb-1">@Model.Name @if (Model.Status == "Verified") { <i class="bi bi-patch-check-fill text-primary fs-5"></i> }</h1>
+                <div class="text-muted"><i class="bi bi-geo-alt me-1"></i>@Model.Location &nbsp;&middot;&nbsp; <i class="bi bi-people me-1"></i>@Model.Size employees &nbsp;&middot;&nbsp; <i class="bi bi-diagram-3 me-1"></i>@Model.Industry</div>
+            </div>
+            <a class="btn btn-outline-soft" href="#"><i class="bi bi-globe me-1"></i>@Model.Website</a>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-4 order-lg-2">
+            <div class="panel">
+                <h5>Company info</h5>
+                <div class="info-row"><span>Industry</span><span>@Model.Industry</span></div>
+                <div class="info-row"><span>Founded</span><span>@Model.Founded</span></div>
+                <div class="info-row"><span>Size</span><span>@Model.Size</span></div>
+                <div class="info-row"><span>Open jobs</span><span>@jobs.Count</span></div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="panel mb-4"><h5>About @Model.Name</h5><p class="mb-0">@Model.About</p></div>
+            <h3 class="h5 mb-3">Open positions (@jobs.Count)</h3>
+            @if (jobs.Any())
+            {
+                <div class="row g-4">@foreach (var j in jobs) { <div class="col-md-6">@await Html.PartialAsync("_JobCard", j)</div> }</div>
+            }
+            else { <div class="panel empty"><i class="bi bi-briefcase"></i>No open positions right now.</div> }
+        </div>
+    </div>
+</div>

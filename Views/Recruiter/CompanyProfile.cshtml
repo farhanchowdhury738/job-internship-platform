@@ -1,0 +1,32 @@
+@model Company
+@{ ViewData["Title"] = "Company Profile"; Layout = "_DashboardLayout"; }
+<div class="mb-4"><h1 class="page-title">Company profile</h1><p class="page-sub">This is how candidates see your company.</p></div>
+<form asp-action="CompanyProfile" method="post" enctype="multipart/form-data">
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card-panel mb-4">
+                <h5>Company details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label">Company name</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+                    <div class="col-md-6"><label class="form-label">Industry</label><input class="form-control" name="Industry" value="@Model.Industry" /></div>
+                    <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" name="Location" value="@Model.Location" /></div>
+                    <div class="col-md-6"><label class="form-label">Website</label><input class="form-control" name="Website" value="@Model.Website" /></div>
+                    <div class="col-md-6"><label class="form-label">Company size</label>
+                        <select class="form-select" name="Size">@foreach (var s in new[] { "1-10", "11-50", "51-200", "201-500", "501-1000", "1000+" }) { <option selected="@(Model.Size == s)">@s</option> }</select></div>
+                    <div class="col-md-6"><label class="form-label">Founded</label><input class="form-control" type="number" name="Founded" value="@Model.Founded" /></div>
+                    <div class="col-12"><label class="form-label">About company</label><textarea class="form-control" name="About" rows="5">@Model.About</textarea></div>
+                </div>
+            </div>
+            <button class="btn btn-primary-grad btn-lg" type="submit"><i class="bi bi-check2 me-2"></i>Save company profile</button>
+        </div>
+        <div class="col-xl-4">
+            <div class="card-panel text-center mb-4">
+                <div class="logo lg mx-auto mb-3" style="background:@Model.Color">@Model.Initials</div>
+                <h5 class="mb-1">@Model.Name</h5>
+                <span class="status st-accepted"><i class="bi bi-patch-check"></i>@Model.Status</span>
+                <div class="upload-zone mt-4" id="cvZone"><i class="bi bi-image"></i><div class="fw-semibold text-dark mt-1" id="cvName">Upload logo</div><small class="text-muted">PNG or JPG, 512x512</small><input type="file" id="cvFile" name="logo" accept="image/*" hidden /></div>
+            </div>
+            <a class="btn btn-outline-soft w-100" asp-controller="Companies" asp-action="Details" asp-route-id="@Model.Id"><i class="bi bi-eye me-2"></i>Preview public page</a>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - JobHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public">
+    <header class="site-header sticky-top">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark"><i class="bi bi-briefcase-fill"></i></span>Job<span>Hub</span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav mx-lg-auto gap-lg-1">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Jobs" asp-action="Index">Find Jobs</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Jobs" asp-action="Index" asp-route-type="Internship">Internships</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Companies" asp-action="Index">Companies</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-eye me-1"></i>Preview Dashboards</a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-soft border-0">
+                                <li><a class="dropdown-item" asp-controller="JobSeeker" asp-action="Dashboard"><i class="bi bi-person me-2"></i>Job Seeker</a></li>
+                                <li><a class="dropdown-item" asp-controller="Recruiter" asp-action="Dashboard"><i class="bi bi-building me-2"></i>Recruiter</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard"><i class="bi bi-shield-check me-2"></i>Admin</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 mt-3 mt-lg-0">
+                        <a class="btn btn-ghost" asp-controller="Account" asp-action="Login">Log in</a>
+                        <a class="btn btn-primary-grad" asp-controller="Account" asp-action="Register">Sign up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <a class="brand text-white mb-3 d-inline-flex" asp-controller="Home" asp-action="Index"><span class="brand-mark"><i class="bi bi-briefcase-fill"></i></span>Job<span>Hub</span></a>
+                    <p class="text-white-50 small mb-0">Connecting talented people with great companies. Find your next job or internship in minutes.</p>
+                </div>
+                <div class="col-6 col-lg-2 offset-lg-2">
+                    <h6>Job Seekers</h6>
+                    <ul class="list-unstyled small">
+                        <li><a asp-controller="Jobs" asp-action="Index">Browse Jobs</a></li>
+                        <li><a asp-controller="Jobs" asp-action="Index" asp-route-type="Internship">Internships</a></li>
+                        <li><a asp-controller="Companies" asp-action="Index">Companies</a></li>
+                        <li><a asp-controller="Account" asp-action="Register">Create Profile</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6>Recruiters</h6>
+                    <ul class="list-unstyled small">
+                        <li><a asp-controller="Account" asp-action="Register" asp-route-role="Recruiter">Post a Job</a></li>
+                        <li><a asp-controller="Recruiter" asp-action="Dashboard">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6>Company</h6>
+                    <ul class="list-unstyled small">
+                        <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                        <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2026 JobHub - Job &amp; Internship Platform. All rights reserved.</div>
+        </div>
+    </footer>
+
+    @await Html.PartialAsync("_Toast")
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

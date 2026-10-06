@@ -1,0 +1,41 @@
+@model Job
+@{ ViewData["Title"] = "Apply - " + Model.Title; var p = (UserProfile)ViewBag.Profile; }
+<div class="container py-4" style="max-width:900px">
+    <nav class="small mb-3"><a asp-action="Details" asp-route-id="@Model.Id"><i class="bi bi-arrow-left me-1"></i>Back to job</a></nav>
+    <div class="panel mb-4 d-flex align-items-center gap-3">
+        <div class="logo" style="background:@Model.CompanyColor">@Model.CompanyInitials</div>
+        <div><h1 class="h4 mb-0">@Model.Title</h1><span class="text-muted">@Model.CompanyName - @Model.Location</span></div>
+    </div>
+    <form asp-action="Apply" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="panel mb-4">
+                    <h5>Your details</h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6"><label class="form-label">Full name</label><input class="form-control" value="@p.FullName" /></div>
+                        <div class="col-sm-6"><label class="form-label">Email</label><input class="form-control" value="@p.Email" /></div>
+                        <div class="col-sm-6"><label class="form-label">Phone</label><input class="form-control" value="@p.Phone" /></div>
+                        <div class="col-sm-6"><label class="form-label">Location</label><input class="form-control" value="@p.Location" /></div>
+                    </div>
+                </div>
+                <div class="panel mb-4">
+                    <h5>Resume / CV</h5>
+                    <div class="file-pill mb-3"><span class="ic"><i class="bi bi-file-earmark-pdf"></i></span><div class="flex-grow-1"><strong class="d-block text-dark">@p.CvFileName</strong><small class="text-muted">@p.CvSize - profile CV</small></div><span class="tag tag-green">Default</span></div>
+                    <div class="upload-zone" id="cvZone"><i class="bi bi-cloud-arrow-up"></i><div class="fw-semibold text-dark mt-1" id="cvName">Upload a different CV</div><small class="text-muted">PDF or DOCX, max 5 MB</small><input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx" hidden /></div>
+                </div>
+                <div class="panel">
+                    <h5>Cover letter <span class="text-muted fw-normal">(optional)</span></h5>
+                    <textarea class="form-control" name="coverLetter" rows="6" placeholder="Tell the recruiter why you are a great fit..."></textarea>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="panel sticky-side">
+                    <h5>Ready to apply?</h5>
+                    <p class="text-muted small">Your profile and CV will be shared with @Model.CompanyName. You can track the status from your dashboard.</p>
+                    <button class="btn btn-primary-grad w-100 btn-lg" type="submit"><i class="bi bi-send me-2"></i>Submit application</button>
+                    <a class="btn btn-ghost w-100 mt-2" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

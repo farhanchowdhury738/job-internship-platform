@@ -1,0 +1,21 @@
+@model List<Notification>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title">Notifications</h1>
+        <p class="page-sub">@Model.Count(n => !n.IsRead) unread notifications</p>
+    </div>
+    <button class="btn btn-outline-soft" data-mark-all-read><i class="bi bi-check2-all me-1"></i>Mark all as read</button>
+</div>
+<div class="card-panel p-0">
+    @foreach (var n in Model)
+    {
+        <div class="notif-item @(n.IsRead ? "" : "unread")">
+            <span class="notif-icon tone-@n.Tone"><i class="bi @n.Icon"></i></span>
+            <div class="flex-grow-1">
+                <div class="fw-semibold">@n.Title</div>
+                <div class="text-muted small">@n.Message</div>
+            </div>
+            <small class="text-muted text-nowrap">@n.TimeAgo</small>
+        </div>
+    }
+</div>

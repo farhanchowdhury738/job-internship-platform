@@ -1,0 +1,11 @@
+@model List<ActivityItem>
+@{ ViewData["Title"] = "Platform Activity"; Layout = "_DashboardLayout"; }
+<div class="mb-4"><h1 class="page-title">Platform activity</h1><p class="page-sub">A live feed of what is happening on JobHub.</p></div>
+<div class="card-panel">
+    <div class="timeline">
+        @foreach (var a in Model)
+        {
+            <div class="t-item"><span class="t-ic tone-@a.Tone"><i class="bi @a.Icon"></i></span><div class="flex-grow-1"><div class="text-dark"><strong>@a.Actor</strong> @a.Text</div><small class="text-muted">@a.Time</small></div></div>
+        }
+    </div>
+</div>

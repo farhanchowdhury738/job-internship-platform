@@ -1,0 +1,50 @@
+@model UserProfile
+@{ ViewData["Title"] = "My Profile"; Layout = "_DashboardLayout"; }
+<div class="mb-4"><h1 class="page-title">My profile</h1><p class="page-sub">Keep your information up to date so recruiters can find you.</p></div>
+<form asp-action="Profile" method="post" enctype="multipart/form-data">
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card-panel mb-4">
+                <h5>Personal information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label">Full name</label><input class="form-control" name="FullName" value="@Model.FullName" /></div>
+                    <div class="col-md-6"><label class="form-label">Headline</label><input class="form-control" name="Headline" value="@Model.Headline" /></div>
+                    <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" type="email" name="Email" value="@Model.Email" /></div>
+                    <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" name="Phone" value="@Model.Phone" /></div>
+                    <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" name="Location" value="@Model.Location" /></div>
+                    <div class="col-md-6"><label class="form-label">Website / Portfolio</label><input class="form-control" name="Website" value="@Model.Website" /></div>
+                    <div class="col-12"><label class="form-label">About me</label><textarea class="form-control" name="About" rows="4">@Model.About</textarea></div>
+                </div>
+            </div>
+            <div class="card-panel mb-4">
+                <h5>Education &amp; experience</h5>
+                <div class="row g-3">
+                    <div class="col-md-8"><label class="form-label">Education</label><input class="form-control" name="Education" value="@Model.Education" /></div>
+                    <div class="col-md-4"><label class="form-label">Experience</label><input class="form-control" name="Experience" value="@Model.Experience" /></div>
+                </div>
+            </div>
+            <div class="card-panel">
+                <h5>Skills</h5>
+                <div class="skill-input" id="skillBox">
+                    @foreach (var s in Model.Skills) { <span class="skill-chip" data-v="@s">@s<button type="button" aria-label="remove">&times;</button></span> }
+                    <input type="text" placeholder="Type a skill and press Enter" />
+                </div>
+                <input type="hidden" name="SkillsCsv" id="skillsHidden" />
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card-panel mb-4">
+                <h5>Resume / CV</h5>
+                <div class="file-pill mb-3"><span class="ic"><i class="bi bi-file-earmark-pdf"></i></span><div class="flex-grow-1 min-w-0"><strong class="d-block text-dark text-truncate">@Model.CvFileName</strong><small class="text-muted">@Model.CvSize - updated @Model.CvUpdated.ToString("dd MMM")</small></div><button type="button" class="btn btn-sm btn-danger-soft" title="Remove"><i class="bi bi-trash"></i></button></div>
+                <div class="upload-zone" id="cvZone"><i class="bi bi-cloud-arrow-up"></i><div class="fw-semibold text-dark mt-1" id="cvName">Click or drag to upload</div><small class="text-muted">PDF, DOC, DOCX - max 5 MB</small><input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx" hidden /></div>
+            </div>
+            <div class="card-panel mb-4">
+                <h5>Profile strength</h5>
+                <div class="d-flex justify-content-between small mb-1"><span>Completion</span><strong class="text-dark">@Model.Completion%</strong></div>
+                <div class="progress mb-3"><div class="progress-bar" style="width:@Model.Completion%"></div></div>
+                <ul class="check-list small"><li><i class="bi bi-check-circle-fill text-success"></i>Basic info added</li><li><i class="bi bi-check-circle-fill text-success"></i>CV uploaded</li><li><i class="bi bi-circle text-muted"></i>Add a profile photo</li></ul>
+            </div>
+            <button class="btn btn-primary-grad btn-lg w-100" type="submit"><i class="bi bi-check2 me-2"></i>Save changes</button>
+        </div>
+    </div>
+</form>

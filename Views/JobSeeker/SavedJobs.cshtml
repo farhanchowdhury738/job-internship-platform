@@ -1,0 +1,8 @@
+@model List<Job>
+@{ ViewData["Title"] = "Saved Jobs"; Layout = "_DashboardLayout"; }
+<div class="mb-4"><h1 class="page-title">Saved jobs</h1><p class="page-sub">@Model.Count jobs you bookmarked for later.</p></div>
+@if (Model.Any())
+{
+    <div class="row g-4">@foreach (var j in Model) { <div class="col-md-6 col-xxl-4">@await Html.PartialAsync("_JobCard", j)</div> }</div>
+}
+else { <div class="card-panel empty"><i class="bi bi-bookmark-heart"></i><h5>No saved jobs yet</h5><p>Tap the bookmark icon on any job to save it.</p><a class="btn btn-soft" asp-controller="Jobs" asp-action="Index">Browse jobs</a></div> }

@@ -1,0 +1,31 @@
+@model List<Job>
+@{ ViewData["Title"] = "Manage Job Posts"; Layout = "_DashboardLayout"; var st = (string?)ViewBag.Status; }
+<div class="mb-4"><h1 class="page-title">Job posts</h1><p class="page-sub">Approve, flag or remove job and internship posts.</p></div>
+<div class="table-wrap">
+    <div class="table-head"><div class="chip-tabs">
+        <a asp-action="Jobs" class="@(string.IsNullOrEmpty(st) ? "active" : "")">All</a>
+        @foreach (var s in new[] { "Active", "Pending", "Flagged", "Closed" }) { <a asp-action="Jobs" asp-route-status="@s" class="@(st == s ? "active" : "")">@s</a> }
+    </div></div>
+    <div class="table-responsive"><table class="table">
+        <thead><tr><th>Job</th><th>Company</th><th>Type</th><th>Applicants</th><th>Posted</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        @foreach (var j in Model)
+        {
+            <tr>
+                <td><strong class="text-dark d-block">@j.Title</strong><small class="text-muted">@j.Location</small></td>
+                <td class="text-muted">@j.CompanyName</td>
+                <td><span class="tag @(j.Type == "Internship" ? "tag-intern" : "tag-primary")">@j.Type</span></td>
+                <td>@j.ApplicantCount</td><td class="text-muted">@j.PostedAgo</td>
+                <td><span class="status @UiHelper.GenericStatusClass(j.Status)">@j.Status</span></td>
+                <td>
+                    <form asp-action="Moderate" method="post" class="row-actions">
+                        <input type="hidden" name="target" value="Job" /><input type="hidden" name="id" value="@j.Id" /><input type="hidden" name="returnAction" value="Jobs" />
+                        <a class="btn btn-icon" asp-controller="Jobs" asp-action="Details" asp-route-id="@j.Id" title="View"><i class="bi bi-eye"></i></a>
+                        @if (j.Status == "Pending" || j.Status == "Flagged") { <button class="btn btn-soft" name="act" value="Approved" title="Approve"><i class="bi bi-check-lg"></i></button> }
+                        <button class="btn btn-danger-soft" name="act" value="Removed" title="Remove" onclick="return confirm('Remove this job post?')"><i class="bi bi-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody></table></div>
+</div>

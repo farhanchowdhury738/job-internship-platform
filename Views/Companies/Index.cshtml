@@ -1,0 +1,35 @@
+@model List<Company>
+@{ ViewData["Title"] = "Companies"; var industries = (List<string>)ViewBag.Industries; }
+<div class="page-banner">
+    <div class="container">
+        <h1 class="mb-3">Explore companies</h1>
+        <form method="get" class="search-bar">
+            <div class="field"><i class="bi bi-search"></i><input type="text" name="q" value="@ViewBag.Q" placeholder="Search company name" /></div>
+            <div class="field"><i class="bi bi-diagram-3"></i>
+                <select name="industry" class="form-select border-0 ps-5" style="box-shadow:none">
+                    <option value="">All industries</option>
+                    @foreach (var i in industries) { <option value="@i" selected="@((string?)ViewBag.Industry == i)">@i</option> }
+                </select></div>
+            <button class="btn btn-primary-grad btn-lg">Search</button>
+        </form>
+    </div>
+</div>
+<div class="container py-5">
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var c in Model)
+            {
+                <div class="col-sm-6 col-lg-4 col-xl-3">
+                    <a class="company-card" asp-action="Details" asp-route-id="@c.Id">
+                        <div class="logo lg" style="background:@c.Color">@c.Initials</div>
+                        <h6>@c.Name @if (c.Status == "Verified") { <i class="bi bi-patch-check-fill text-primary" title="Verified"></i> }</h6>
+                        <div class="text-muted small mb-3">@c.Industry - @c.Location</div>
+                        <span class="tag tag-primary">@c.OpenJobs open jobs</span>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else { <div class="panel empty"><i class="bi bi-buildings"></i><h5>No companies found</h5></div> }
+</div>

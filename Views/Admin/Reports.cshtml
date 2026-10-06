@@ -1,0 +1,30 @@
+@model List<ReportItem>
+@{ ViewData["Title"] = "Manage Reports"; Layout = "_DashboardLayout"; var st = (string?)ViewBag.Status; }
+<div class="mb-4"><h1 class="page-title">Reports</h1><p class="page-sub">Review content reported by users.</p></div>
+<div class="table-wrap">
+    <div class="table-head"><div class="chip-tabs">
+        <a asp-action="Reports" class="@(string.IsNullOrEmpty(st) ? "active" : "")">All</a>
+        @foreach (var s in new[] { "Open", "Reviewing", "Resolved", "Dismissed" }) { <a asp-action="Reports" asp-route-status="@s" class="@(st == s ? "active" : "")">@s</a> }
+    </div></div>
+    <div class="table-responsive"><table class="table">
+        <thead><tr><th>Reported item</th><th>Reason</th><th>Reported by</th><th>Date</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td><strong class="text-dark d-block">@r.Target</strong><span class="tag tag-gray">@r.Type</span></td>
+                <td class="text-muted">@r.Reason</td><td class="text-muted">@r.ReportedBy</td>
+                <td class="text-muted">@r.Date.ToString("dd MMM")</td>
+                <td><span class="status @UiHelper.GenericStatusClass(r.Status)">@r.Status</span></td>
+                <td>
+                    <form asp-action="Moderate" method="post" class="row-actions">
+                        <input type="hidden" name="target" value="Report" /><input type="hidden" name="id" value="@r.Id" /><input type="hidden" name="returnAction" value="Reports" />
+                        <button class="btn btn-soft" name="act" value="Resolved" title="Resolve"><i class="bi bi-check2-circle"></i></button>
+                        <button class="btn btn-outline-soft" name="act" value="Dismissed" title="Dismiss"><i class="bi bi-x-lg"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody></table></div>
+    @if (!Model.Any()) { <div class="empty"><i class="bi bi-flag"></i>No reports.</div> }
+</div>

@@ -1,0 +1,31 @@
+@model ApplicationsViewModel
+@{ ViewData["Title"] = "My Applications"; Layout = "_DashboardLayout"; }
+<div class="mb-4"><h1 class="page-title">My applications</h1><p class="page-sub">Track the status of every job you applied for.</p></div>
+<div class="chip-tabs mb-4">
+    <a asp-action="Applications" class="@(string.IsNullOrEmpty(Model.Status) ? "active" : "")">All<small>@Model.Counts.Values.Sum()</small></a>
+    @foreach (var kv in Model.Counts)
+    { <a asp-action="Applications" asp-route-status="@kv.Key" class="@(Model.Status == kv.Key ? "active" : "")">@kv.Key<small>@kv.Value</small></a> }
+</div>
+@if (Model.Items.Any())
+{
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>Job</th><th>Location</th><th>Applied</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var a in Model.Items)
+                {
+                    <tr>
+                        <td><div class="d-flex align-items-center gap-3"><div class="logo sm" style="background:@a.CompanyColor">@a.CompanyInitials</div><div><a class="fw-semibold text-dark" asp-controller="Jobs" asp-action="Details" asp-route-id="@a.JobId">@a.JobTitle</a><div class="small text-muted">@a.CompanyName</div></div></div></td>
+                        <td class="text-muted">@a.Location</td>
+                        <td class="text-muted">@a.AppliedDate.ToString("dd MMM yyyy")</td>
+                        <td>@await Html.PartialAsync("_StatusBadge", a.Status)</td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-soft" asp-controller="Jobs" asp-action="Details" asp-route-id="@a.JobId">View job</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else { <div class="card-panel empty"><i class="bi bi-inbox"></i><h5>No applications here</h5><a class="btn btn-soft" asp-controller="Jobs" asp-action="Index">Browse jobs</a></div> }

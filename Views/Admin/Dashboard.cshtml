@@ -1,0 +1,52 @@
+@model AdminDashboardViewModel
+@{ ViewData["Title"] = "Admin Dashboard"; Layout = "_DashboardLayout"; var max = Model.MonthlySignups.Max(); var months = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }; }
+<div class="mb-4"><h1 class="page-title">Admin dashboard</h1><p class="page-sub">Monitor platform health and moderate content.</p></div>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl"><div class="stat-card"><span class="ic tone-primary"><i class="bi bi-people"></i></span><div><div class="val">@Model.Users.ToString("N0")</div><div class="lbl">Users</div></div></div></div>
+    <div class="col-6 col-xl"><div class="stat-card"><span class="ic tone-info"><i class="bi bi-buildings"></i></span><div><div class="val">@Model.Companies</div><div class="lbl">Companies</div></div></div></div>
+    <div class="col-6 col-xl"><div class="stat-card"><span class="ic tone-success"><i class="bi bi-briefcase"></i></span><div><div class="val">@Model.Jobs</div><div class="lbl">Job posts</div></div></div></div>
+    <div class="col-6 col-xl"><div class="stat-card"><span class="ic tone-warning"><i class="bi bi-send"></i></span><div><div class="val">@Model.Applications.ToString("N0")</div><div class="lbl">Applications</div></div></div></div>
+    <div class="col-12 col-xl"><div class="stat-card"><span class="ic tone-danger"><i class="bi bi-flag"></i></span><div><div class="val">@Model.OpenReports</div><div class="lbl">Open reports</div></div></div></div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="card-panel h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2"><h5 class="mb-0">New sign-ups</h5><span class="tag tag-primary">2026</span></div>
+            <div class="bars">
+                @for (var i = 0; i < Model.MonthlySignups.Length; i++)
+                { <div class="bar"><b>@Model.MonthlySignups[i]</b><div style="height:@(Model.MonthlySignups[i] * 100 / max)%"></div><small>@months[i]</small></div> }
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card-panel h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Live activity</h5><a class="small fw-semibold" asp-action="Activity">All</a></div>
+            <div class="timeline">
+                @foreach (var a in Model.Activity.Take(5))
+                {
+                    <div class="t-item"><span class="t-ic tone-@a.Tone"><i class="bi @a.Icon"></i></span><div><div class="small text-dark"><strong>@a.Actor</strong> @a.Text</div><small class="text-muted">@a.Time</small></div></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="table-wrap">
+            <div class="table-head"><h5 class="mb-0 fs-6">Reports needing attention</h5><a class="small fw-semibold" asp-action="Reports">Manage</a></div>
+            <div class="table-responsive"><table class="table">
+                <thead><tr><th>Target</th><th>Reason</th><th>Status</th></tr></thead>
+                <tbody>@foreach (var r in Model.Reports) { <tr><td><strong class="text-dark d-block">@r.Target</strong><small class="text-muted">@r.Type</small></td><td class="text-muted">@r.Reason</td><td><span class="status @UiHelper.GenericStatusClass(r.Status)">@r.Status</span></td></tr> }</tbody>
+            </table></div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card-panel">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Newest users</h5><a class="small fw-semibold" asp-action="Users">View all</a></div>
+            @foreach (var u in Model.NewUsers)
+            {
+                <div class="list-row"><span class="avatar sm">@u.Initials</span><div class="flex-grow-1 min-w-0"><div class="fw-semibold text-dark text-truncate">@u.Name</div><small class="text-muted">@u.Role</small></div><small class="text-muted">@u.Joined.ToString("dd MMM")</small></div>
+            }
+        </div>
+    </div>
+</div>

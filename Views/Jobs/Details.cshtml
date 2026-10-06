@@ -1,0 +1,55 @@
+@model JobDetailsViewModel
+@{ var j = Model.Job; ViewData["Title"] = j.Title; }
+<div class="container py-4">
+    <nav class="small mb-3"><a asp-controller="Jobs" asp-action="Index"><i class="bi bi-arrow-left me-1"></i>Back to jobs</a></nav>
+    <div class="detail-head mb-4">
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+            <div class="logo lg" style="background:@j.CompanyColor">@j.CompanyInitials</div>
+            <div class="flex-grow-1">
+                <h1 class="h2 mb-1">@j.Title</h1>
+                <a asp-controller="Companies" asp-action="Details" asp-route-id="@j.CompanyId" class="fw-semibold">@j.CompanyName</a>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    <span class="tag @(j.Type == "Internship" ? "tag-intern" : "tag-primary")">@j.Type</span>
+                    @if (j.IsRemote) { <span class="tag tag-green">Remote</span> }
+                    <span class="tag tag-gray">@j.Level level</span>
+                    <span class="tag tag-gray"><i class="bi bi-geo-alt me-1"></i>@j.Location</span>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-soft @(j.IsSaved ? "saved" : "")" data-save-job="@j.Id"><i class="bi @(j.IsSaved ? "bi-bookmark-fill" : "bi-bookmark") me-1"></i>Save</button>
+                <a class="btn btn-primary-grad btn-lg" asp-action="Apply" asp-route-id="@j.Id">Apply now</a>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="panel mb-4"><h5>About the role</h5><p class="mb-0">@j.Description</p></div>
+            <div class="panel mb-4"><h5>Responsibilities</h5><ul class="check-list">@foreach (var r in j.Responsibilities) { <li><i class="bi bi-check-circle-fill"></i><span>@r</span></li> }</ul></div>
+            <div class="panel mb-4"><h5>Requirements</h5><ul class="check-list">@foreach (var r in j.Requirements) { <li><i class="bi bi-check-circle-fill"></i><span>@r</span></li> }</ul></div>
+            <div class="panel mb-4"><h5>Skills</h5>@foreach (var s in j.Skills) { <span class="skill-chip">@s</span> }</div>
+            <div class="panel"><h5>Benefits</h5><div class="row g-2">@foreach (var b in j.Benefits) { <div class="col-sm-6"><i class="bi bi-gift text-primary me-2"></i>@b</div> }</div></div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel mb-4 sticky-side">
+                <h5>Job overview</h5>
+                <div class="info-row"><span>Salary</span><span>@j.SalaryText</span></div>
+                <div class="info-row"><span>Posted</span><span>@j.PostedAgo</span></div>
+                <div class="info-row"><span>Deadline</span><span>@j.Deadline.ToString("dd MMM yyyy")</span></div>
+                <div class="info-row"><span>Category</span><span>@j.Category</span></div>
+                <div class="info-row"><span>Applicants</span><span>@j.ApplicantCount</span></div>
+                <a class="btn btn-primary-grad w-100 mt-3" asp-action="Apply" asp-route-id="@j.Id">Apply for this job</a>
+                <hr />
+                <div class="d-flex align-items-center gap-3">
+                    <div class="logo sm" style="background:@Model.Company.Color">@Model.Company.Initials</div>
+                    <div><strong class="d-block text-dark">@Model.Company.Name</strong><small class="text-muted">@Model.Company.Industry - @Model.Company.Size employees</small></div>
+                </div>
+                <a class="btn btn-outline-soft w-100 mt-3" asp-controller="Companies" asp-action="Details" asp-route-id="@Model.Company.Id">View company</a>
+            </div>
+        </div>
+    </div>
+    @if (Model.Similar.Any())
+    {
+        <h3 class="h4 mt-5 mb-3">Similar jobs</h3>
+        <div class="row g-4">@foreach (var s in Model.Similar) { <div class="col-md-6 col-lg-4">@await Html.PartialAsync("_JobCard", s)</div> }</div>
+    }
+</div>

@@ -1,0 +1,29 @@
+@model List<Company>
+@{ ViewData["Title"] = "Manage Companies"; Layout = "_DashboardLayout"; var st = (string?)ViewBag.Status; }
+<div class="mb-4"><h1 class="page-title">Companies</h1><p class="page-sub">Verify, suspend and review employer accounts.</p></div>
+<div class="table-wrap">
+    <div class="table-head"><div class="chip-tabs">
+        <a asp-action="Companies" class="@(string.IsNullOrEmpty(st) ? "active" : "")">All</a>
+        @foreach (var s in new[] { "Verified", "Pending", "Suspended" }) { <a asp-action="Companies" asp-route-status="@s" class="@(st == s ? "active" : "")">@s</a> }
+    </div></div>
+    <div class="table-responsive"><table class="table">
+        <thead><tr><th>Company</th><th>Industry</th><th>Location</th><th>Open jobs</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td><div class="d-flex align-items-center gap-3"><div class="logo sm" style="background:@c.Color">@c.Initials</div><div><strong class="text-dark d-block">@c.Name</strong><small class="text-muted">@c.Website</small></div></div></td>
+                <td class="text-muted">@c.Industry</td><td class="text-muted">@c.Location</td><td>@c.OpenJobs</td>
+                <td><span class="status @UiHelper.GenericStatusClass(c.Status)">@c.Status</span></td>
+                <td>
+                    <form asp-action="Moderate" method="post" class="row-actions">
+                        <input type="hidden" name="target" value="Company" /><input type="hidden" name="id" value="@c.Id" /><input type="hidden" name="returnAction" value="Companies" />
+                        <a class="btn btn-icon" asp-controller="Companies" asp-action="Details" asp-route-id="@c.Id" title="View"><i class="bi bi-eye"></i></a>
+                        @if (c.Status != "Verified") { <button class="btn btn-soft" name="act" value="Verified" title="Verify"><i class="bi bi-patch-check"></i></button> }
+                        @if (c.Status != "Suspended") { <button class="btn btn-danger-soft" name="act" value="Suspended" title="Suspend"><i class="bi bi-slash-circle"></i></button> }
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody></table></div>
+</div>

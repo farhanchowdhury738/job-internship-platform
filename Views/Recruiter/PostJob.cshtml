@@ -1,0 +1,57 @@
+@model Job
+@{
+    var editing = Model.Id != 0;
+    ViewData["Title"] = editing ? "Edit Job" : "Post a Job";
+    Layout = "_DashboardLayout";
+}
+<div class="mb-4"><h1 class="page-title">@(editing ? "Edit job post" : "Post a new job")</h1><p class="page-sub">Fill in the details to publish a job or internship.</p></div>
+<form asp-action="SaveJob" method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card-panel mb-4">
+                <h5>Basic information</h5>
+                <div class="row g-3">
+                    <div class="col-12"><label class="form-label">Job title</label><input class="form-control" name="Title" value="@Model.Title" placeholder="e.g. Frontend Developer" required /></div>
+                    <div class="col-md-6"><label class="form-label">Type</label>
+                        <select class="form-select" name="Type">@foreach (var t in new[] { "Full-time", "Part-time", "Internship", "Contract" }) { <option selected="@(Model.Type == t)">@t</option> }</select></div>
+                    <div class="col-md-6"><label class="form-label">Category</label>
+                        <select class="form-select" name="Category">@foreach (var c in new[] { "Engineering", "Design", "Data", "Marketing", "Product", "Healthcare", "Operations", "Support" }) { <option selected="@(Model.Category == c)">@c</option> }</select></div>
+                    <div class="col-md-6"><label class="form-label">Experience level</label>
+                        <select class="form-select" name="Level">@foreach (var l in new[] { "Entry", "Mid", "Senior" }) { <option selected="@(Model.Level == l)">@l</option> }</select></div>
+                    <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" name="Location" value="@Model.Location" placeholder="City, Country" /></div>
+                    <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="IsRemote" name="IsRemote" value="true" checked="@Model.IsRemote" /><label class="form-check-label" for="IsRemote">This position can be done remotely</label></div></div>
+                </div>
+            </div>
+            <div class="card-panel mb-4">
+                <h5>Description</h5>
+                <div class="mb-3"><label class="form-label">About the role</label><textarea class="form-control" name="Description" rows="5" placeholder="Describe the role...">@Model.Description</textarea></div>
+                <div class="mb-3"><label class="form-label">Responsibilities <small class="text-muted fw-normal">(one per line)</small></label><textarea class="form-control" rows="4">@string.Join("\n", Model.Responsibilities)</textarea></div>
+                <div class="mb-0"><label class="form-label">Requirements <small class="text-muted fw-normal">(one per line)</small></label><textarea class="form-control" rows="4">@string.Join("\n", Model.Requirements)</textarea></div>
+            </div>
+            <div class="card-panel">
+                <h5>Skills</h5>
+                <div class="skill-input" id="skillBox">
+                    @foreach (var s in Model.Skills) { <span class="skill-chip" data-v="@s">@s<button type="button" aria-label="remove">&times;</button></span> }
+                    <input type="text" placeholder="Type a skill and press Enter" />
+                </div>
+                <input type="hidden" name="SkillsCsv" id="skillsHidden" />
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card-panel mb-4">
+                <h5>Salary &amp; deadline</h5>
+                <div class="row g-3">
+                    <div class="col-6"><label class="form-label">Min ($)</label><input class="form-control" type="number" name="SalaryMin" value="@Model.SalaryMin" /></div>
+                    <div class="col-6"><label class="form-label">Max ($)</label><input class="form-control" type="number" name="SalaryMax" value="@Model.SalaryMax" /></div>
+                    <div class="col-12"><label class="form-label">Application deadline</label><input class="form-control" type="date" name="Deadline" value="@Model.Deadline.ToString("yyyy-MM-dd")" /></div>
+                </div>
+            </div>
+            <div class="card-panel">
+                <h5>Publish</h5>
+                <button class="btn btn-primary-grad w-100 btn-lg mb-2" type="submit"><i class="bi bi-rocket-takeoff me-2"></i>@(editing ? "Update job" : "Publish job")</button>
+                <a class="btn btn-ghost w-100" asp-action="Jobs">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

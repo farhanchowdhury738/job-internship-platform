@@ -1,0 +1,3 @@
+@model List<Notification>
+@{ ViewData["Title"] = "Notifications"; Layout = "_DashboardLayout"; }
+@await Html.PartialAsync("_NotificationList", Model)

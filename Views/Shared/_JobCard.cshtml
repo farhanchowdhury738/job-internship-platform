@@ -1,0 +1,26 @@
+@model Job
+<div class="job-card h-100">
+    <div class="d-flex align-items-start gap-3">
+        <div class="logo" style="background:@Model.CompanyColor">@Model.CompanyInitials</div>
+        <div class="flex-grow-1 min-w-0">
+            <a class="job-title stretched-link-lite" asp-controller="Jobs" asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a>
+            <div class="text-muted small">@Model.CompanyName</div>
+        </div>
+        <button type="button" class="btn-save @(Model.IsSaved ? "saved" : "")" data-save-job="@Model.Id" aria-label="Save job" title="Save job">
+            <i class="bi @(Model.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+        </button>
+    </div>
+    <div class="d-flex flex-wrap gap-2 my-3">
+        <span class="tag @(Model.Type == "Internship" ? "tag-intern" : "tag-primary")">@Model.Type</span>
+        @if (Model.IsRemote) { <span class="tag tag-green">Remote</span> }
+        <span class="tag tag-gray">@Model.Level</span>
+    </div>
+    <div class="job-meta">
+        <span><i class="bi bi-geo-alt"></i>@Model.Location</span>
+        <span><i class="bi bi-cash-stack"></i>@Model.SalaryText</span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+        <small class="text-muted"><i class="bi bi-clock me-1"></i>@Model.PostedAgo</small>
+        <a class="btn btn-sm btn-soft" asp-controller="Jobs" asp-action="Apply" asp-route-id="@Model.Id">Apply now</a>
+    </div>
+</div>

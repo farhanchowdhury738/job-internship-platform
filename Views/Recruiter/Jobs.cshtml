@@ -1,0 +1,34 @@
+@model List<Job>
+@{ ViewData["Title"] = "My Jobs"; Layout = "_DashboardLayout"; var st = (string?)ViewBag.Status; }
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div><h1 class="page-title">My job posts</h1><p class="page-sub">Create, edit and close your jobs &amp; internships.</p></div>
+    <a class="btn btn-primary-grad" asp-action="PostJob"><i class="bi bi-plus-lg me-2"></i>Post new job</a>
+</div>
+<div class="chip-tabs mb-4">
+    <a asp-action="Jobs" class="@(string.IsNullOrEmpty(st) ? "active" : "")">All</a>
+    @foreach (var s in new[] { "Active", "Pending", "Closed" }) { <a asp-action="Jobs" asp-route-status="@s" class="@(st == s ? "active" : "")">@s</a> }
+</div>
+<div class="table-wrap">
+    <div class="table-responsive"><table class="table">
+        <thead><tr><th>Job</th><th>Type</th><th>Applicants</th><th>Deadline</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        @foreach (var j in Model)
+        {
+            <tr>
+                <td><strong class="text-dark d-block">@j.Title</strong><small class="text-muted">@j.Location - posted @j.PostedAgo</small></td>
+                <td><span class="tag @(j.Type == "Internship" ? "tag-intern" : "tag-primary")">@j.Type</span></td>
+                <td><a class="fw-semibold" asp-action="Applicants" asp-route-jobId="@j.Id">@j.ApplicantCount</a></td>
+                <td class="text-muted">@j.Deadline.ToString("dd MMM yyyy")</td>
+                <td><span class="status @UiHelper.GenericStatusClass(j.Status)">@j.Status</span></td>
+                <td>
+                    <div class="row-actions">
+                        <a class="btn btn-icon" asp-controller="Jobs" asp-action="Details" asp-route-id="@j.Id" title="View"><i class="bi bi-eye"></i></a>
+                        <a class="btn btn-icon" asp-action="EditJob" asp-route-id="@j.Id" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="DeleteJob" asp-route-id="@j.Id" method="post" data-confirm="Delete this job post?"><button class="btn btn-danger-soft" title="Delete"><i class="bi bi-trash"></i></button></form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody></table></div>
+    @if (!Model.Any()) { <div class="empty"><i class="bi bi-briefcase"></i>No jobs found.</div> }
+</div>

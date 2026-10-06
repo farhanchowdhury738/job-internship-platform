@@ -1,0 +1,122 @@
+@model HomeViewModel
+@{ ViewData["Title"] = "Find your dream job or internship"; }
+
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="pill mb-4"><i class="bi bi-stars"></i> 12,000+ jobs &amp; internships updated daily</span>
+                <h1 class="mb-3">Find the job that <span class="grad">fits your future</span></h1>
+                <p class="lead mb-4">Search thousands of full-time roles and internships from verified companies. Build your profile once and apply in a single click.</p>
+                <form class="search-bar" asp-controller="Jobs" asp-action="Index" method="get">
+                    <div class="field"><i class="bi bi-search"></i><input type="text" name="Q" placeholder="Job title, skill or company" /></div>
+                    <div class="field"><i class="bi bi-geo-alt"></i><input type="text" name="Location" placeholder="City or remote" /></div>
+                    <button class="btn btn-primary-grad btn-lg" type="submit">Search</button>
+                </form>
+                <div class="mt-3 text-muted small">Popular:
+                    <a asp-controller="Jobs" asp-action="Index" asp-route-q="React" class="ms-1">React</a>,
+                    <a asp-controller="Jobs" asp-action="Index" asp-route-q="Python" class="ms-1">Python</a>,
+                    <a asp-controller="Jobs" asp-action="Index" asp-route-type="Internship" class="ms-1">Internships</a>,
+                    <a asp-controller="Jobs" asp-action="Index" asp-route-remoteOnly="true" class="ms-1">Remote</a>
+                </div>
+                <div class="stat-row mt-5">
+                    <div><strong>12k+</strong><span>Live jobs</span></div>
+                    <div><strong>3.4k</strong><span>Companies</span></div>
+                    <div><strong>80k</strong><span>Job seekers</span></div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-visual hero-stack">
+                    <div class="float-card"><span class="ic tone-success"><i class="bi bi-check2-circle"></i></span><div><strong class="d-block">Application accepted</strong><small class="text-muted">Nexora Tech - .NET Developer</small></div></div>
+                    <div class="float-card"><span class="ic tone-primary"><i class="bi bi-camera-video"></i></span><div><strong class="d-block">Interview tomorrow</strong><small class="text-muted">10:30 AM - Google Meet</small></div></div>
+                    <div class="float-card"><span class="ic tone-warning"><i class="bi bi-bookmark-star"></i></span><div><strong class="d-block">5 new matches</strong><small class="text-muted">Based on your skills</small></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div><h2 class="section-title mb-1">Browse by category</h2><p class="section-sub mb-0">Explore opportunities across popular fields.</p></div>
+        </div>
+        <div class="row g-3">
+            @foreach (var c in Model.Categories)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <a class="cat-card" asp-controller="Jobs" asp-action="Index" asp-route-category="@c.Name">
+                        <span class="ic"><i class="bi @c.Icon"></i></span>
+                        <div><strong class="d-block">@c.Name</strong><small>@c.Count open positions</small></div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div><h2 class="section-title mb-1">Latest jobs &amp; internships</h2><p class="section-sub mb-0">Fresh opportunities posted this week.</p></div>
+            <a class="btn btn-outline-soft d-none d-sm-inline-flex" asp-controller="Jobs" asp-action="Index">View all <i class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+        <div class="row g-4">
+            @foreach (var job in Model.FeaturedJobs)
+            {
+                <div class="col-md-6 col-lg-4">@await Html.PartialAsync("_JobCard", job)</div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">How it works</h2>
+            <p class="section-sub mx-auto">Three simple steps to land your next opportunity.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 how-step"><div class="panel h-100"><div class="num">1</div><h5>Create your profile</h5><p class="text-muted mb-0">Sign up, add your skills and upload your CV to stand out to recruiters.</p></div></div>
+            <div class="col-md-4 how-step"><div class="panel h-100"><div class="num">2</div><h5>Search &amp; apply</h5><p class="text-muted mb-0">Filter by type, location and level, save favourites and apply online in seconds.</p></div></div>
+            <div class="col-md-4 how-step"><div class="panel h-100"><div class="num">3</div><h5>Track &amp; get hired</h5><p class="text-muted mb-0">Follow every application status and get notified when recruiters respond.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div><h2 class="section-title mb-1">Top companies hiring</h2><p class="section-sub mb-0">Verified employers building great teams.</p></div>
+            <a class="btn btn-outline-soft d-none d-sm-inline-flex" asp-controller="Companies" asp-action="Index">All companies</a>
+        </div>
+        <div class="row g-4">
+            @foreach (var c in Model.TopCompanies)
+            {
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a class="company-card" asp-controller="Companies" asp-action="Details" asp-route-id="@c.Id">
+                        <div class="logo" style="background:@c.Color">@c.Initials</div>
+                        <h6>@c.Name</h6>
+                        <small class="text-muted">@c.OpenJobs open jobs</small>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="cta">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h2 class="mb-2">Hiring? Reach thousands of qualified candidates.</h2>
+                    <p class="mb-0 text-white-50">Create a company profile, post jobs and internships, and manage applicants from one simple dashboard.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="btn btn-light btn-lg text-primary" asp-controller="Account" asp-action="Register" asp-route-role="Recruiter">Post a job</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

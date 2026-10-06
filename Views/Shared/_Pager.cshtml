@@ -1,0 +1,28 @@
+@model JobSearchViewModel
+@{
+    Dictionary<string, string?> Route(int page) => new()
+    {
+        ["Q"] = Model.Q, ["Location"] = Model.Location, ["Type"] = Model.Type,
+        ["Category"] = Model.Category, ["Level"] = Model.Level, ["Sort"] = Model.Sort,
+        ["RemoteOnly"] = Model.RemoteOnly ? "true" : null, ["Page"] = page.ToString()
+    };
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="mt-4 d-flex justify-content-center" aria-label="Pages">
+        <ul class="pagination pager">
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", "Jobs", Route(Model.Page - 1))"><i class="bi bi-chevron-left"></i></a>
+            </li>
+            @for (var p = 1; p <= Model.TotalPages; p++)
+            {
+                <li class="page-item @(p == Model.Page ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", "Jobs", Route(p))">@p</a>
+                </li>
+            }
+            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", "Jobs", Route(Model.Page + 1))"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+}
