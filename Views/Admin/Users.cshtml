@@ -1,33 +1,239 @@
-@model List<AppUser>
-@{ ViewData["Title"] = "Manage Users"; Layout = "_DashboardLayout"; var role = (string?)ViewBag.Role; }
-<div class="mb-4"><h1 class="page-title">Users</h1><p class="page-sub">Manage job seekers, recruiters and administrators.</p></div>
-<div class="table-wrap">
-    <div class="table-head">
-        <div class="chip-tabs">
-            <a asp-action="Users" class="@(string.IsNullOrEmpty(role) ? "active" : "")">All</a>
-            @foreach (var r in new[] { "JobSeeker", "Recruiter", "Admin" }) { <a asp-action="Users" asp-route-role="@r" class="@(role == r ? "active" : "")">@r</a> }
-        </div>
-        <form method="get" class="input-icon" style="min-width:260px"><i class="bi bi-search"></i><input class="form-control" name="q" value="@ViewBag.Q" placeholder="Search name or email" /><input type="hidden" name="role" value="@role" /></form>
+@model HireLink.Models.ViewModels.AdminUserListViewModel
+@{
+    ViewData["Title"] = "Manage Users";
+    var hasFilters = !string.IsNullOrWhiteSpace(Model.Search)
+        || !string.IsNullOrWhiteSpace(Model.Role)
+        || Model.IsActive.HasValue;
+
+    string RoleBadge(string role) => role switch
+    {
+        "Admin" => "badge badge-role-admin",
+        "Recruiter" => "badge badge-role-recruiter",
+        _ => "badge badge-role-student"
+    };
+
+    string StatusText(bool isActive) => isActive ? "Active" : "Deactivated";
+    string StatusClass(bool isActive) => isActive ? "chip chip--mint" : "chip chip--rose";
+}
+
+<div class="section-head mt-0">
+    <div>
+        <h2>Manage users</h2>
+        <p>Search accounts, review their role and status, and control access to HireLink.</p>
     </div>
-    <div class="table-responsive"><table class="table">
-        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th class="text-end">Actions</th></tr></thead>
-        <tbody>
-        @foreach (var u in Model)
-        {
-            <tr>
-                <td><div class="d-flex align-items-center gap-2"><span class="avatar sm">@u.Initials</span><div><strong class="text-dark d-block">@u.Name</strong><small class="text-muted">@u.Email</small></div></div></td>
-                <td><span class="tag @(u.Role == "Admin" ? "tag-intern" : u.Role == "Recruiter" ? "tag-green" : "tag-primary")">@u.Role</span></td>
-                <td><span class="status @UiHelper.GenericStatusClass(u.Status)">@u.Status</span></td>
-                <td class="text-muted">@u.Joined.ToString("dd MMM yyyy")</td>
-                <td>
-                    <form asp-action="Moderate" method="post" class="row-actions">
-                        <input type="hidden" name="target" value="User" /><input type="hidden" name="id" value="@u.Id" /><input type="hidden" name="returnAction" value="Users" />
-                        @if (u.Status == "Suspended") { <button class="btn btn-soft" name="act" value="Reactivated" title="Reactivate"><i class="bi bi-arrow-counterclockwise"></i></button> }
-                        else { <button class="btn btn-outline-soft" name="act" value="Suspended" title="Suspend"><i class="bi bi-slash-circle"></i></button> }
-                        <button class="btn btn-danger-soft" name="act" value="Deleted" title="Delete" onclick="return confirm('Delete this user?')"><i class="bi bi-trash"></i></button>
-                    </form>
-                </td>
-            </tr>
-        }
-        </tbody></table></div>
+    <span class="chip chip--brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /></svg>
+        @Model.Users.TotalCount @(Model.Users.TotalCount == 1 ? "user" : "users")
+    </span>
 </div>
+
+<partial name="_AdminTabs" />
+
+<form method="get" asp-action="Users" class="admin-toolbar" role="search">
+    <div class="admin-toolbar__field admin-toolbar__field--grow">
+        <label class="visually-hidden" for="userSearch">Search users</label>
+        <span class="admin-toolbar__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        </span>
+        <input id="userSearch" name="search" value="@Model.Search" class="form-control" type="search"
+               placeholder="Search by name or email…" />
+    </div>
+
+    <div class="admin-toolbar__field">
+        <label class="visually-hidden" for="userRole">Role</label>
+        <select id="userRole" name="role" class="form-select">
+            <option value="">All roles</option>
+            @foreach (var availableRole in Model.AvailableRoles)
+            {
+                <option value="@availableRole" selected="@(string.Equals(availableRole, Model.Role, StringComparison.Ordinal))">@availableRole</option>
+            }
+        </select>
+    </div>
+
+    <div class="admin-toolbar__field">
+        <label class="visually-hidden" for="userStatus">Account status</label>
+        <select id="userStatus" name="isActive" class="form-select">
+            <option value="">Any status</option>
+            <option value="true" selected="@(Model.IsActive == true)">Active</option>
+            <option value="false" selected="@(Model.IsActive == false)">Deactivated</option>
+        </select>
+    </div>
+
+    <div class="admin-toolbar__actions">
+        <button type="submit" class="btn btn-primary">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            Search
+        </button>
+        @if (hasFilters)
+        {
+            <a asp-action="Users" class="btn btn-light">Clear</a>
+        }
+    </div>
+</form>
+
+@if (Model.Users.TotalCount == 0)
+{
+    <div class="empty-state fade-up">
+        <div class="empty-state__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11" /></svg>
+        </div>
+        @if (hasFilters)
+        {
+            <h3>No users match your filters</h3>
+            <p>Try a different name or email, or change the role and status filters.</p>
+            <a asp-action="Users" class="btn btn-light">Clear filters</a>
+        }
+        else
+        {
+            <h3>No users have registered yet</h3>
+            <p>New student, recruiter, and admin accounts will appear here.</p>
+        }
+    </div>
+}
+else
+{
+    <div class="table-shell fade-up">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th class="d-none d-md-table-cell">Role</th>
+                        <th class="d-none d-sm-table-cell">Status</th>
+                        <th class="d-none d-lg-table-cell">Joined</th>
+                        <th class="d-none d-md-table-cell">Jobs</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users.Items)
+                    {
+                        var mark = string.IsNullOrWhiteSpace(user.Name) ? "U" : user.Name.Trim()[..1].ToUpperInvariant();
+                        <tr>
+                            <td>
+                                <div class="table-user">
+                                    <span class="company-mark" style="width:38px;height:38px;font-size:.95rem;" aria-hidden="true">@mark</span>
+                                    <div>
+                                        <div class="table-user__name">
+                                            @user.Name
+                                            @if (user.IsCurrentUser)
+                                            {
+                                                <span class="badge badge-role-recruiter ms-1">You</span>
+                                            }
+                                        </div>
+                                        <div class="table-user__email">@user.Email</div>
+                                        <div class="d-md-none mt-1">
+                                            <span class="@RoleBadge(user.Role)">@user.Role</span>
+                                            <span class="@StatusClass(user.IsActive) ms-1">
+                                                @StatusText(user.IsActive)
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <span class="@RoleBadge(user.Role)">@user.Role</span>
+                            </td>
+                            <td class="d-none d-sm-table-cell">
+                                <span class="@StatusClass(user.IsActive)">
+                                    @if (user.IsActive)
+                                    {
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7" /></svg>
+                                    }
+                                    else
+                                    {
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                                    }
+                                    @StatusText(user.IsActive)
+                                </span>
+                            </td>
+                            <td class="d-none d-lg-table-cell cell-muted">@user.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td class="d-none d-md-table-cell">
+                                @if (user.JobCount > 0)
+                                {
+                                    <span class="cell-strong">@user.JobCount</span>
+                                }
+                                else
+                                {
+                                    <span class="cell-muted">0</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex flex-wrap gap-2 justify-content-end">
+                                    @if (user.IsCurrentUser)
+                                    {
+                                        <span class="chip" title="You cannot change your own role or status">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                                            Protected
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-action="ChangeRole" class="admin-role-form">
+                                            <input type="hidden" name="UserId" value="@user.Id" />
+                                            <input type="hidden" name="ReturnSearch" value="@Model.Search" />
+                                            <input type="hidden" name="ReturnRole" value="@Model.Role" />
+                                            <input type="hidden" name="ReturnIsActive" value="@(Model.IsActive?.ToString().ToLowerInvariant())" />
+                                            <input type="hidden" name="ReturnPage" value="@Model.Users.Page" />
+
+                                            <label class="visually-hidden" for="role-@user.Id">Role for @user.Name</label>
+                                            <select id="role-@user.Id" name="Role" class="form-select form-select-sm">
+                                                @foreach (var availableRole in Model.AvailableRoles)
+                                                {
+                                                    <option value="@availableRole" selected="@(string.Equals(availableRole, user.Role, StringComparison.Ordinal))">@availableRole</option>
+                                                }
+                                            </select>
+                                            <button type="submit" class="btn btn-soft btn-sm" title="Save role" aria-label="Save role for @user.Name">
+                                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                            </button>
+                                        </form>
+
+                                        @if (user.IsActive)
+                                        {
+                                            <form method="post" asp-action="Deactivate">
+                                                <input type="hidden" name="UserId" value="@user.Id" />
+                                                <input type="hidden" name="ReturnSearch" value="@Model.Search" />
+                                                <input type="hidden" name="ReturnRole" value="@Model.Role" />
+                                                <input type="hidden" name="ReturnIsActive" value="@(Model.IsActive?.ToString().ToLowerInvariant())" />
+                                                <input type="hidden" name="ReturnPage" value="@Model.Users.Page" />
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        data-confirm-delete
+                                                        data-confirm-title="Deactivate this account?"
+                                                        data-confirm-message="@user.Name will no longer be able to sign in. Their account and @user.JobCount job posting(s) are kept and can be reactivated later."
+                                                        aria-label="Deactivate @user.Name">
+                                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m6 6 12 12" /></svg>
+                                                    <span class="d-none d-sm-inline">Deactivate</span>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" asp-action="Activate">
+                                                <input type="hidden" name="UserId" value="@user.Id" />
+                                                <input type="hidden" name="ReturnSearch" value="@Model.Search" />
+                                                <input type="hidden" name="ReturnRole" value="@Model.Role" />
+                                                <input type="hidden" name="ReturnIsActive" value="@(Model.IsActive?.ToString().ToLowerInvariant())" />
+                                                <input type="hidden" name="ReturnPage" value="@Model.Users.Page" />
+                                                <button type="submit" class="btn btn-soft btn-sm" aria-label="Reactivate @user.Name">
+                                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></svg>
+                                                    <span class="d-none d-sm-inline">Activate</span>
+                                                </button>
+                                            </form>
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_AdminPagination" model="Model.Pagination" />
+
+    <p class="admin-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8h.01M11 12h1v4h1" /></svg>
+        Deactivating an account only blocks sign-in — user records and job postings are never deleted. The last active administrator cannot be demoted or deactivated.
+    </p>
+}

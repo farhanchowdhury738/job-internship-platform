@@ -1,93 +1,92 @@
-using JobInternshipPlatform.Data;
-using JobInternshipPlatform.Models;
+using System.Security.Claims;
+using HireLink.Data;
+using HireLink.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace JobInternshipPlatform.Controllers
+namespace HireLink.Controllers;
+
+[Authorize(Roles = "Recruiter")]
+public class RecruiterController : Controller
 {
-    // TODO (back end): [Authorize(Roles = "Recruiter")]
-    public class RecruiterController : Controller
+    private readonly AppDbContext _context;
+
+    public RecruiterController(AppDbContext context)
     {
-        private static List<Job> MyJobs => MockData.Jobs.Where(j => j.CompanyId == MockData.RecruiterCompanyId).ToList();
+        _context = context;
+    }
 
-        public IActionResult Dashboard()
-        {
-            var vm = new RecruiterDashboardViewModel
-            {
-                Company = MockData.Companies.First(c => c.Id == MockData.RecruiterCompanyId),
-                Jobs = MyJobs.Take(4).ToList(),
-                RecentApplicants = MockData.Applicants.OrderByDescending(a => a.AppliedDate).Take(5).ToList(),
-                ActiveJobs = MyJobs.Count(j => j.Status == "Active"),
-                TotalApplicants = MyJobs.Sum(j => j.ApplicantCount),
-                Shortlisted = MockData.Applicants.Count(a => a.Status == ApplicationStatus.Shortlisted),
-                Views = MyJobs.Sum(j => j.Views),
-                WeeklyApplicants = new[] { 12, 19, 8, 24, 31, 18, 27 }
-            };
-            return View(vm);
-        }
+    public async Task<IActionResult> Index()
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var jobs = await _context.Jobs.Where(j => j.UserId == userId)
+            .OrderByDescending(j => j.PostedAt).ToListAsync();
+        return View(jobs);
+    }
 
-        [HttpGet]
-        public IActionResult CompanyProfile() => View(MockData.Companies.First(c => c.Id == MockData.RecruiterCompanyId));
+    public IActionResult Create() => View();
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult CompanyProfile(Company model)
-        {
-            TempData["Success"] = "Company profile saved.";
-            return RedirectToAction(nameof(CompanyProfile));
-        }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Job job)
+    {
+        ModelState.Remove(nameof(job.User));
+        if (!ModelState.IsValid)
+            return View(job);
 
-        public IActionResult Jobs(string? status)
-        {
-            ViewBag.Status = status;
-            var list = MyJobs.Where(j => string.IsNullOrEmpty(status) || j.Status == status).ToList();
-            return View(list);
-        }
+        job.UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        job.PostedAt = DateTime.Now;
+        _context.Jobs.Add(job);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 
-        [HttpGet]
-        public IActionResult PostJob() => View(new Job { Type = "Full-time", Level = "Entry", Deadline = DateTime.Today.AddDays(30) });
+    public async Task<IActionResult> Update(int id)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
+        if (job == null) return NotFound();
+        return View(job);
+    }
 
-        [HttpGet]
-        public IActionResult EditJob(int id)
-        {
-            var job = MockData.Jobs.FirstOrDefault(j => j.Id == id);
-            if (job == null) return NotFound();
-            return View("PostJob", job);
-        }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Update(int id, Job input)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
+        if (job == null) return NotFound();
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult SaveJob(Job model)
-        {
-            TempData["Success"] = model.Id == 0 ? "Job posted successfully!" : "Job updated successfully.";
-            return RedirectToAction(nameof(Jobs));
-        }
+        ModelState.Remove(nameof(input.User));
+        if (!ModelState.IsValid) return View(input);
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult DeleteJob(int id)
-        {
-            TempData["Success"] = "Job deleted (demo).";
-            return RedirectToAction(nameof(Jobs));
-        }
+        job.Title = input.Title;
+        job.Description = input.Description;
+        job.Salary = input.Salary;
+        job.Location = input.Location;
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 
-        public IActionResult Applicants(int? jobId, string? status)
-        {
-            var vm = new ApplicantsViewModel
-            {
-                JobId = jobId,
-                Status = status,
-                Jobs = MyJobs,
-                Items = MockData.Applicants
-                    .Where(a => (jobId == null || a.JobId == jobId) && (string.IsNullOrEmpty(status) || a.Status.ToString() == status))
-                    .OrderByDescending(a => a.MatchScore).ToList()
-            };
-            return View(vm);
-        }
+    public async Task<IActionResult> Delete(int id)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
+        if (job == null) return NotFound();
+        return View(job);
+    }
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult UpdateStatus(int id, ApplicationStatus status)
-        {
-            TempData["Success"] = $"Application marked as {status}.";
-            return RedirectToAction(nameof(Applicants));
-        }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var job = await _context.Jobs.FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
+        if (job == null) return NotFound();
 
-        public IActionResult Notifications() => View(MockData.RecruiterNotifications);
+        _context.Jobs.Remove(job);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
     }
 }

@@ -1,31 +1,30 @@
-using JobInternshipPlatform.Data;
-using JobInternshipPlatform.Models;
+using HireLink.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
-namespace JobInternshipPlatform.Controllers
+namespace HireLink.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly AppDbContext _context;
+
+    public HomeController(AppDbContext context)
     {
-        public IActionResult Index()
-        {
-            var vm = new HomeViewModel
-            {
-                FeaturedJobs = MockData.Jobs.Where(j => j.Status == "Active").OrderByDescending(j => j.PostedDate).Take(6).ToList(),
-                TopCompanies = MockData.Companies.Where(c => c.Status == "Verified").Take(6).ToList(),
-                Categories = MockData.CategoryIcons
-                    .Select(c => (c.Name, c.Icon, MockData.Jobs.Count(j => j.Category == c.Name)))
-                    .ToList()
-            };
-            return View(vm);
-        }
+        _context = context;
+    }
 
-        public IActionResult Privacy() => View();
+    public async Task<IActionResult> Index()
+    {
+        var jobs = await _context.Jobs.Include(j => j.User)
+            .OrderByDescending(j => j.PostedAt).ToListAsync();
+        return View(jobs);
+    }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    public async Task<IActionResult> Details(int id)
+    {
+        var job = await _context.Jobs.Include(j => j.User)
+            .FirstOrDefaultAsync(j => j.Id == id);
+        if (job == null) return NotFound();
+        return View(job);
     }
 }

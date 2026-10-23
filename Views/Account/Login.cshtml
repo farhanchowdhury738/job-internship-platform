@@ -1,24 +1,65 @@
 @model LoginViewModel
-@{ ViewData["Title"] = "Log in"; Layout = "_AuthLayout"; }
-<a class="brand d-lg-none mb-4" asp-controller="Home" asp-action="Index"><span class="brand-mark"><i class="bi bi-briefcase-fill"></i></span>Job<span>Hub</span></a>
-<h1>Welcome back</h1>
-<p class="text-muted mb-4">Log in to continue your job search.</p>
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
-    <div class="mb-3">
-        <label class="form-label">I am a</label>
-        <div class="role-switch">
-            <div><input type="radio" id="r1" name="Role" value="JobSeeker" checked="@(Model.Role == "JobSeeker")" /><label for="r1"><i class="bi bi-person"></i>Job Seeker</label></div>
-            <div><input type="radio" id="r2" name="Role" value="Recruiter" checked="@(Model.Role == "Recruiter")" /><label for="r2"><i class="bi bi-building"></i>Recruiter</label></div>
-            <div><input type="radio" id="r3" name="Role" value="Admin" checked="@(Model.Role == "Admin")" /><label for="r3"><i class="bi bi-shield-check"></i>Admin</label></div>
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="auth-shell fade-up">
+    <aside class="auth-aside">
+        <div>
+            <span class="eyebrow" style="color:#e0e7ff; background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.24);">
+                <span class="dot"></span> Welcome back
+            </span>
+            <div class="auth-aside__body mt-4">
+                <h2>Pick up where you left off.</h2>
+                <p>Your saved searches, applications, and posted roles are waiting for you.</p>
+                <ul class="auth-points">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                        Track the latest openings
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                        Manage your recruiter listings
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                        Secure, cookie-based sessions
+                    </li>
+                </ul>
+            </div>
         </div>
+        <p class="small mb-0">HireLink · Connecting talent with opportunity</p>
+    </aside>
+
+    <div class="auth-form">
+        <h1>Log in to HireLink</h1>
+        <p class="lead">Enter your details to access your account.</p>
+
+        <form asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 px-3 small mb-3" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email address</label>
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Log in
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+        </form>
+
+        <div class="auth-divider">or</div>
+
+        <p class="text-center text-muted-soft mb-0">
+            New to HireLink? <a asp-action="Register" class="fw-semibold">Create an account</a>
+        </p>
     </div>
-    <div class="mb-3"><label class="form-label">Email</label><div class="input-icon"><i class="bi bi-envelope"></i><input class="form-control" type="email" name="Email" placeholder="you@example.com" /></div></div>
-    <div class="mb-3">
-        <label class="form-label d-flex justify-content-between">Password <a class="fw-normal small" asp-action="ForgotPassword">Forgot password?</a></label>
-        <div class="input-icon"><i class="bi bi-lock"></i><input id="pw" class="form-control" type="password" name="Password" placeholder="Enter your password" /></div>
-    </div>
-    <div class="form-check mb-4"><input class="form-check-input" type="checkbox" name="RememberMe" value="true" id="rem" /><label class="form-check-label" for="rem">Remember me</label></div>
-    <button class="btn btn-primary-grad w-100 btn-lg" type="submit">Log in</button>
-</form>
-<p class="text-center text-muted mt-4 mb-0">New to JobHub? <a asp-action="Register" class="fw-semibold">Create an account</a></p>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
