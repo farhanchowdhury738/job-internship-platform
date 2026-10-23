@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<section class="empty-state" role="alert">
+    <div class="empty-state__icon" aria-hidden="true">!</div>
+    <h1>Something went wrong</h1>
+    <p>We could not complete your request. Please try again shortly.</p>
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Return to jobs</a>
+</section>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HireLink.Controllers;
 
-public class HomeController : Controller
+public partial class HomeController : Controller
 {
     private readonly AppDbContext _context;
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Qb3SWuh6SsQ=",
+  "dgSpecHash": "vWjWaPbbimw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\HireLink.csproj",
+  "projectFilePath": "C:\\Users\\farha\\Downloads\\job-internship-platform\\HireLink.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\farha\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\farha\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",

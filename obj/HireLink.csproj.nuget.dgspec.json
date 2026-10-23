@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\HireLink.csproj": {}
+    "C:\\Users\\farha\\Downloads\\job-internship-platform\\HireLink.csproj": {}
   },
   "projects": {
-    "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\HireLink.csproj": {
+    "C:\\Users\\farha\\Downloads\\job-internship-platform\\HireLink.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\HireLink.csproj",
+        "projectUniqueName": "C:\\Users\\farha\\Downloads\\job-internship-platform\\HireLink.csproj",
         "projectName": "HireLink",
-        "projectPath": "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\HireLink.csproj",
+        "projectPath": "C:\\Users\\farha\\Downloads\\job-internship-platform\\HireLink.csproj",
         "packagesPath": "C:\\Users\\farha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\farha\\Downloads\\HireLink\\HireLink\\obj\\",
+        "outputPath": "C:\\Users\\farha\\Downloads\\job-internship-platform\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

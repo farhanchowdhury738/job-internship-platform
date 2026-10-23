@@ -1,0 +1,14 @@
+.git
+.vs
+bin
+obj
+**/bin
+**/obj
+.env
+.env.*
+*.user
+*.suo
+Dockerfile*
+!Dockerfile
+README.md
+DEPLOYMENT.md
