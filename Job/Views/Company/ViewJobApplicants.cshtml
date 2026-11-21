@@ -1,0 +1,248 @@
+﻿
+@model IEnumerable<Job.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "View Job Applicants";
+
+    string StatusColor(string status) => status switch
+    {
+        "submitted" => "secondary",
+        "under_review" => "info",
+        "shortlisted" => "primary",
+        "interview" => "warning",
+        "selected" => "success",
+        "rejected" => "danger",
+        _ => "secondary"
+    };
+
+    string StatusText(string status) => status switch
+    {
+        "under_review" => "Under Review",
+        _ => System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(status.Replace("_", " "))
+    };
+}
+
+<section class="applicants-section">
+    <div class="container py-4">
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-controller="Company" asp-action="ManageApplicants"
+               class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+                <i class="bi bi-arrow-left me-1"></i> Back to Manage Applicants
+            </a>
+        </div>
+
+        <!-- Job Information -->
+        <div class="mb-4">
+            </span>
+            <h2 class="fw-bold text-dark mt-3 mb-1">@ViewBag.JobTitle</h2>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4 justify-content-center">
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-dark mb-0">@ViewBag.TotalApplicants</h4>
+                        <small class="text-muted">Total Applicants</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-secondary mb-0">@ViewBag.Submitted</h4>
+                        <small class="text-muted">Submitted</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-info mb-0">@ViewBag.UnderReview</h4>
+                        <small class="text-muted">Under Review</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-primary mb-0">@ViewBag.Shortlisted</h4>
+                        <small class="text-muted">Shortlisted</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-warning mb-0">@ViewBag.Interview</h4>
+                        <small class="text-muted">Interview</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-success mb-0">@ViewBag.Selected</h4>
+                        <small class="text-muted">Selected</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="card applicant-card border-0 rounded-4 shadow-sm">
+                    <div class="card-body px-3 py-2 text-center">
+                        <h4 class="fw-bold text-danger mb-0">@ViewBag.Rejected</h4>
+                        <small class="text-muted">Rejected</small>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Success Message -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3">
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Applicants Header -->
+        <div class="mb-3">
+            <h5 class="fw-bold text-dark mb-1">Applicants</h5>
+        </div>
+
+        <!-- Empty State -->
+        @if (!Model.Any())
+        {
+            <div class="card applicant-card border-0 rounded-4 shadow-sm text-center p-5">
+                <i class="bi bi-people fs-1 text-muted mb-3"></i>
+                <h5 class="fw-bold">No Applicants Yet</h5>
+                <p class="text-muted small mb-0">No candidates have applied for this job yet.</p>
+            </div>
+        }
+        else
+        {
+            <!-- Applicant Cards -->
+            <div class="row g-3">
+                @foreach (var applicant in Model)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card applicant-card border-0 rounded-4 shadow-sm h-100">
+                            <div class="card-body p-3">
+
+                                <!-- Applicant Name and Status -->
+                                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                    <h6 class="fw-bold text-dark mb-0">
+                                        @applicant.User?.FullName
+                                    </h6>
+                                    <span class="badge bg-@StatusColor(applicant.ApplicationStatus) rounded-pill">
+                                        @StatusText(applicant.ApplicationStatus)
+                                    </span>
+                                </div>
+
+                                <!-- Skills -->
+                                <p class="text-muted small fw-semibold mb-2">Skills</p>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    @if (applicant.User?.Skills.Any() == true)
+                                    {
+                                        @foreach (var skill in applicant.User.Skills)
+                                        {
+                                            <span class="badge bg-light text-dark border rounded-pill">
+                                                @skill.SkillName
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">No skills added.</span>
+                                    }
+                                </div>
+
+                                <!-- Applied Date -->
+                                <div class="dotted-divider pt-2 mb-3 d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small">Applied Date</span>
+                                    <span class="small fw-semibold">
+                                        @applicant.AppliedAt.ToString("dd MMM yyyy")
+                                    </span>
+                                </div>
+
+                                <!-- View Profile -->
+                                <div class="d-grid mb-3">
+                                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" disabled>
+                                        View Profile
+                                    </button>
+                                </div>
+
+                                <!-- Update Application Status -->
+                                <form asp-controller="Company" asp-action="UpdateApplicationStatus" method="post">
+                                    <input type="hidden" name="applicationId" value="@applicant.ApplicationId" />
+
+                                    <label class="form-label small fw-semibold mb-2">
+                                        Update Application Status
+                                    </label>
+
+                                    <div class="d-flex flex-column gap-2">
+                                        <select name="status" class="form-select form-select-sm">
+                                            <option value="submitted" selected="@(applicant.ApplicationStatus == "submitted")">Submitted</option>
+                                            <option value="under_review" selected="@(applicant.ApplicationStatus == "under_review")">Under Review</option>
+                                            <option value="shortlisted" selected="@(applicant.ApplicationStatus == "shortlisted")">Shortlisted</option>
+                                            <option value="interview" selected="@(applicant.ApplicationStatus == "interview")">Interview</option>
+                                            <option value="selected" selected="@(applicant.ApplicationStatus == "selected")">Selected</option>
+                                            <option value="rejected" selected="@(applicant.ApplicationStatus == "rejected")">Rejected</option>
+                                        </select>
+
+                                        <button type="submit" class="btn btn-primary btn-sm rounded-pill w-100">
+                                            Update Status <i class="bi bi-arrow-right ms-1"></i>
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>
+
+<style>
+    .applicants-section {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #E5E7F2;
+    }
+
+    .applicant-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .applicant-card::before {
+        content: "";
+        display: block;
+        height: 4px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    .applicant-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(108, 75, 255, 0.16) !important;
+    }
+
+    .dotted-divider {
+        border-top: 2px dashed #c5c7d8;
+    }
+</style>

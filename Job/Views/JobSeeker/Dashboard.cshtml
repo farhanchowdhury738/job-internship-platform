@@ -1,0 +1,199 @@
+﻿
+@model Job.Models.User
+
+@{
+    ViewData["Title"] = "Job Seeker Dashboard";
+}
+
+<section class="dashboard-section">
+    <div class="container py-5">
+
+        <!-- Welcome Section -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark mt-3">Welcome, @Model.FullName!</h2>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row g-4">
+
+            <!-- My Profile -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="JobSeeker" asp-action="MyProfile" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">My Profile</h5>
+                            <p class="text-muted small">Manage your personal information and professional profile.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>Manage Profile</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Applied Jobs -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="JobSeeker" asp-action="AppliedJobs" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="bg-info bg-opacity-10 text-info rounded-3 d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                    <i class="bi bi-briefcase fs-4"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">@ViewBag.AppliedJobsCount</span>
+                            </div>
+                            <h5 class="fw-bold">Applied Jobs</h5>
+                            <p class="text-muted small">Track your job and internship applications.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>View Applications</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- My Skills -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="JobSeeker" asp-action="MySkills" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="bg-info bg-opacity-10 text-info rounded-3 d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                    <i class="bi bi-lightning-charge fs-4"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">@ViewBag.TotalCategories</span>
+                            </div>
+                            <h5 class="fw-bold">My Skills</h5>
+                            <p class="text-muted small">Add and manage your professional skills.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>Manage Skills</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- My Projects -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="JobSeeker" asp-action="MyProjects" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="bg-info bg-opacity-10 text-info rounded-3 d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                    <i class="bi bi-folder fs-4"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">@ViewBag.ProjectsCount</span>
+                            </div>
+                            <h5 class="fw-bold">My Projects</h5>
+                            <p class="text-muted small">Showcase your completed and ongoing projects.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>Manage Projects</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- My Education -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                            <i class="bi bi-mortarboard fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">My Education</h5>
+                        <p class="text-muted small">Manage your academic qualifications.</p>
+                        <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                            <span>Manage Education</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Certificates -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="bg-danger bg-opacity-10 text-danger rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                            <i class="bi bi-award fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">My Certificates</h5>
+                        <p class="text-muted small">Add your professional certificates and achievements.</p>
+                        <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                            <span>Manage Certificates</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Jobs -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                            <i class="bi bi-bookmark-heart fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Saved Jobs</h5>
+                        <p class="text-muted small">View jobs and internships saved for later.</p>
+                        <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                            <span>View Saved Jobs</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview List -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                            <i class="bi bi-calendar-check fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Interview List</h5>
+                        <p class="text-muted small">View your applications selected for interviews.</p>
+                        <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                            <span>View Interviews</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rejected List -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px;height:50px;">
+                            <i class="bi bi-person-x fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Rejected List</h5>
+                        <p class="text-muted small">View applications that were rejected.</p>
+                        <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                            <span>View Rejected</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    .dashboard-section { width:100%; min-height:100vh; background:#E5E7F2; }
+    .dashboard-card { position:relative; overflow:hidden; transition:transform .3s ease,box-shadow .3s ease; }
+    .dashboard-card::before { content:""; display:block; height:5px; background:linear-gradient(90deg,#6c4bff,#00c2a8); }
+    .dashboard-card:hover { transform:translateY(-6px); box-shadow:0 12px 25px rgba(108,75,255,.18)!important; }
+    .dotted-divider { border-top:2px dashed #e3e5f2; }
+</style>

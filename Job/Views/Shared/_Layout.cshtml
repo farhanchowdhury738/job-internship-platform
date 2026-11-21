@@ -1,0 +1,172 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HireLink</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Job.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="icon" type="image/png" href="~/favicon.png" asp-append-version="true" />
+
+    <style>
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+        }
+
+        .main-content {
+            width: 100%;
+            min-height: calc(100vh - 140px);
+            padding-top: 56px;
+        }
+
+        /* Footer */
+        .site-footer {
+            width: 100%;
+            background: #1B1F3B;
+            color: #FFFFFF;
+        }
+
+        .site-footer span {
+            font-size: 14px;
+            color: #D1D5E5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm border-bottom">
+            <div class="container">
+
+                <a class="navbar-brand fw-bolder fs-3 fst-italic text-info"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    Hire<span class="text-secondary">Link</span>
+                </a>
+
+                <button class="navbar-toggler border-0 shadow-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
+
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold px-3"
+                                   asp-controller="Home"
+                                   asp-action="Index">
+                                    Home
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                @if (User.IsInRole("job_seeker"))
+                                {
+                                    <a class="nav-link fw-semibold px-3"
+                                       asp-controller="JobSeeker"
+                                       asp-action="Dashboard">
+                                        Dashboard
+                                    </a>
+                                }
+                                else if (User.IsInRole("company"))
+                                {
+                                    <a class="nav-link fw-semibold px-3"
+                                       asp-controller="Company"
+                                       asp-action="Dashboard">
+                                        Dashboard
+                                    </a>
+                                }
+                                else if (User.IsInRole("admin"))
+                                {
+                                    <a class="nav-link fw-semibold px-3"
+                                       asp-controller="Admin"
+                                       asp-action="Dashboard">
+                                        Dashboard
+                                    </a>
+                                }
+                            </li>
+
+                            <li class="nav-item">
+                                <form method="post"
+                                      asp-controller="Account"
+                                      asp-action="Logout">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-link nav-link fw-semibold px-3">
+                                        Logout
+                                    </button>
+
+                                </form>
+                            </li>
+
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mt-3 mt-lg-0 mb-3 mb-lg-0">
+
+                            <a class="nav-link fw-semibold px-3"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Home
+                            </a>
+
+                            <a class="btn btn-outline-primary rounded-pill px-4 fw-semibold"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
+                            </a>
+
+                            <a class="btn btn-primary rounded-pill px-4 fw-semibold"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Registration
+                            </a>
+
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main role="main" class="main-content">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container py-4 text-center">
+            <span>&copy; 2026 - HireLink. All Rights Reserved.</span>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

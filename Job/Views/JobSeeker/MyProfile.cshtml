@@ -1,0 +1,73 @@
+﻿
+<style>
+    .profile-page { min-height:100vh; background:#E5E7F2; }
+    .profile-card { position:relative; overflow:hidden; border:0; border-radius:16px; }
+    .profile-card::before { content:""; display:block; height:4px; background:linear-gradient(90deg,#6c4bff,#00c2a8); }
+</style>
+
+<div class="profile-page py-3">
+    <div class="container">
+
+        <!-- Back Button -->
+        <a asp-controller="JobSeeker" asp-action="Dashboard"
+           class="btn btn-outline-secondary rounded-pill px-4 mt-2 mb-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+
+                <div class="card profile-card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-1">
+                                <i class="bi bi-person-circle text-primary me-2"></i>My Profile
+                            </h5>
+                            <p class="text-muted small mb-0">Update your account information.</p>
+                        </div>
+
+                        <form asp-action="UpdateProfile" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Full Name</label>
+                                <input name="fullName" value="@Model.FullName"
+                                       class="form-control form-control-sm rounded-3" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Email</label>
+                                <input value="@Model.Email"
+                                       class="form-control form-control-sm rounded-3 bg-light" readonly />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Role</label>
+                                <input value="@Model.Role"
+                                       class="form-control form-control-sm rounded-3 bg-light" readonly />
+                            </div>
+
+                            <div class="border-top border-2 border-dashed my-4"></div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold small">New Password [Optional]</label>
+                                <input name="newPassword" type="password"
+                                       class="form-control form-control-sm rounded-3"
+                                       placeholder="Enter new password"
+                                       minlength="3" autocomplete="new-password" />
+                                <small class="text-muted">Leave blank to keep your current password.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary rounded-pill w-100">
+                                <i class="bi bi-check-circle me-2"></i>Update Profile
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

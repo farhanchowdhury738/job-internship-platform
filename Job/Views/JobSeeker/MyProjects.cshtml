@@ -1,0 +1,238 @@
+﻿
+@model Job.Models.JobSeekerProject
+
+@{
+    ViewData["Title"] = "My Projects";
+
+    var projects = ViewBag.JobProjects as IEnumerable<Job.Models.JobSeekerProject>
+                   ?? Enumerable.Empty<Job.Models.JobSeekerProject>();
+
+    bool isEditing = Model != null && Model.ProjectId > 0;
+}
+
+<section class="projects-manage-section">
+    <div class="container py-4">
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-controller="JobSeeker" asp-action="Dashboard"
+               class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Page Header -->
+        <div class="mb-3">
+            <h2 class="fw-bold text-dark mb-1">Projects Details</h2>
+        </div>
+
+        <!-- Success Message -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show rounded-3">
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Create / Edit Project Form -->
+        <div class="card project-card border-0 rounded-4 shadow-sm mb-4">
+            <div class="card-body p-3 p-md-4">
+
+                <h5 class="fw-bold text-dark mb-3">
+                    <i class="bi @(isEditing ? "bi-pencil-square" : "bi-plus-circle") text-primary me-2"></i>
+                    @(isEditing ? "Update Project" : "Add New Project")
+                </h5>
+
+                <form asp-controller="JobSeeker"
+                      asp-action="@(isEditing ? "EditProject" : "CreateProject")"
+                      asp-route-id="@(isEditing ? Model.ProjectId : (int?)null)"
+                      method="post">
+
+                    <input type="hidden" asp-for="ProjectId" />
+
+                    <!-- Project Title -->
+                    <div class="mb-3">
+                        <label asp-for="ProjectTitle" class="form-label fw-semibold small">
+                            Project Title
+                        </label>
+                        <input asp-for="ProjectTitle"
+                               class="form-control form-control-sm"
+                               placeholder="Enter project title" />
+                        <span asp-validation-for="ProjectTitle" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Project Description -->
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold small">
+                            Description
+                        </label>
+                        <textarea asp-for="Description"
+                                  class="form-control form-control-sm"
+                                  rows="3"
+                                  placeholder="Describe your project"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Live Project URL -->
+                    <div class="mb-3">
+                        <label asp-for="LiveUrl" class="form-label fw-semibold small">
+                            Live Project URL
+                        </label>
+                        <input asp-for="LiveUrl"
+                               class="form-control form-control-sm"
+                               placeholder="https://example.com" />
+                        <span asp-validation-for="LiveUrl" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Form Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4">
+                            <i class="bi @(isEditing ? "bi-check-lg" : "bi-plus-lg") me-1"></i>
+                            @(isEditing ? "Update Project" : "Add Project")
+                        </button>
+
+                        @if (isEditing)
+                        {
+                            <a asp-controller="JobSeeker"
+                               asp-action="MyProjects"
+                               class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                                Cancel
+                            </a>
+                        }
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- My Projects List -->
+        <div class="mb-3">
+            <h5 class="fw-bold text-dark mb-1">My Project List</h5>
+        </div>
+
+        @if (!projects.Any())
+        {
+            <!-- Empty State -->
+            <div class="card project-card border-0 rounded-4 shadow-sm text-center p-4">
+                <i class="bi bi-folder2-open fs-1 text-muted mb-2"></i>
+                <h5 class="fw-bold">No Projects Found</h5>
+                <p class="text-muted small mb-0">
+                    You haven't added any projects yet. Create your first project!
+                </p>
+            </div>
+        }
+        else
+        {
+            <!-- Project Cards -->
+            <div class="row g-3">
+
+                @foreach (var project in projects)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card project-card border-0 rounded-4 shadow-sm h-100">
+
+                            <div class="card-body p-3 d-flex flex-column">
+
+                                <!-- Project Information -->
+                                <h6 class="fw-bold text-dark mb-2">
+                                    @project.ProjectTitle
+                                </h6>
+
+                                <p class="text-muted small mb-2 project-description">
+                                    @(string.IsNullOrWhiteSpace(project.Description)
+                                        ? "No description available."
+                                        : project.Description)
+                                </p>
+
+                                <!-- Live Project Link -->
+                                @if (!string.IsNullOrWhiteSpace(project.LiveUrl))
+                                {
+                                    <a href="@project.LiveUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="text-primary text-decoration-none small mb-3">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i>
+                                        View Live Project
+                                    </a>
+                                }
+
+                                <div class="dotted-divider pt-2 mb-3"></div>
+
+                                <!-- Edit and Delete -->
+                                <div class="d-flex gap-2 mt-auto">
+
+                                    <a asp-controller="JobSeeker"
+                                       asp-action="MyProjects"
+                                       asp-route-editId="@project.ProjectId"
+                                       class="btn btn-outline-primary btn-sm rounded-pill flex-fill">
+                                        <i class="bi bi-pencil me-1"></i> Edit
+                                    </a>
+
+                                    <form asp-controller="JobSeeker"
+                                          asp-action="DeleteProject"
+                                          asp-route-id="@project.ProjectId"
+                                          method="post"
+                                          class="flex-fill"
+                                          onsubmit="return confirm('Are you sure you want to delete this project?');">
+
+                                        <button type="submit"
+                                                class="btn btn-outline-danger btn-sm rounded-pill w-100">
+                                            <i class="bi bi-trash me-1"></i> Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+</section>
+
+<style>
+    .projects-manage-section {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #E5E7F2;
+    }
+
+    .project-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .project-card::before {
+        content: "";
+        display: block;
+        height: 4px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(108, 75, 255, 0.16) !important;
+    }
+
+    .project-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 25px;
+    }
+
+    .dotted-divider {
+        border-top: 2px dashed #c5c7d8;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

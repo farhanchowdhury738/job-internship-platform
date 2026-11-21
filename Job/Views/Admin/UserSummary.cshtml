@@ -1,0 +1,539 @@
+﻿
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "User Summary";
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 0;
+    int totalRecords = ViewBag.TotalRecords ?? 0;
+    int pageSize = ViewBag.PageSize ?? 12;
+}
+
+<div class="container-fluid py-4">
+
+    <!-- ==================== Back Button ==================== -->
+    <div class="mb-4">
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- ==================== Page Heading ==================== -->
+    <div class="mb-4">
+        <h3 class="fw-bold mb-1">User Summary</h3>
+        <p class="text-muted mb-0">Overview of registered users and their activity.</p>
+    </div>
+
+    <!-- ==================== Main Statistics Cards ==================== -->
+    <div class="row g-3 mb-4">
+
+        <!-- Total Users -->
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Total Users</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.TotalUsers</h3>
+                        </div>
+                        <div class="text-primary fs-1">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Logins -->
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Total Logins</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.TotalLogins</h3>
+                        </div>
+                        <div class="text-success fs-1">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Logouts -->
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Total Logouts</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.TotalLogouts</h3>
+                        </div>
+                        <div class="text-danger fs-1">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== User Activity Statistics ==================== -->
+    <div class="row g-3 mb-4">
+
+        <!-- Active Users -->
+        <div class="col-12 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Active Users</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.ActiveUsers</h3>
+                        </div>
+                        <div class="text-success fs-1">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Sessions -->
+        <div class="col-12 col-sm-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-2">Active Sessions</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.ActiveSessions</h3>
+                        </div>
+                        <div class="text-info fs-1">
+                            <i class="bi bi-pc-display"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== Role Statistics ==================== -->
+    <div class="row g-3 mb-4">
+
+        <!-- Total Admins -->
+        <div class="col-12 col-sm-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-shield-lock text-danger fs-2"></i>
+                        <div>
+                            <p class="text-muted small mb-1">Total Admins</p>
+                            <h5 class="fw-bold mb-0">@ViewBag.TotalAdmins</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Companies -->
+        <div class="col-12 col-sm-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-building text-primary fs-2"></i>
+                        <div>
+                            <p class="text-muted small mb-1">Total Companies</p>
+                            <h5 class="fw-bold mb-0">@ViewBag.TotalCompanies</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Job Seekers -->
+        <div class="col-12 col-sm-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-person-workspace text-success fs-2"></i>
+                        <div>
+                            <p class="text-muted small mb-1">Total Job Seekers</p>
+                            <h5 class="fw-bold mb-0">@ViewBag.TotalJobSeekers</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== Search and Filter Section ==================== -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3 p-md-4">
+
+            <form asp-controller="Admin"
+                  asp-action="UserSummary"
+                  method="get"
+                  id="userSearchForm">
+
+                <!-- Preserve selected page size -->
+                <input type="hidden" name="pageSize" id="pageSizeInput" value="@pageSize" />
+
+                <div class="row g-3 align-items-end">
+
+                    <!-- Search by User Name -->
+                    <div class="col-12 col-lg-4 col-md-6">
+                        <label class="form-label fw-semibold">Search by Name</label>
+                        <input type="text"
+                               name="searchName"
+                               value="@ViewBag.SearchName"
+                               class="form-control"
+                               placeholder="Enter user name..." />
+                    </div>
+
+                    <!-- Filter by Role -->
+                    <div class="col-12 col-lg-3 col-md-6">
+                        <label class="form-label fw-semibold">Filter by Role</label>
+                        <select name="role" class="form-select">
+                            <option value="">All Roles</option>
+                            <option value="admin" selected="@(ViewBag.SelectedRole == "admin")">Admin</option>
+                            <option value="company" selected="@(ViewBag.SelectedRole == "company")">Company</option>
+                            <option value="job_seeker" selected="@(ViewBag.SelectedRole == "job_seeker")">Job Seeker</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter by Activity Status -->
+                    <div class="col-12 col-lg-3 col-md-6">
+                        <label class="form-label fw-semibold">Activity Status</label>
+                        <select name="activityStatus" class="form-select">
+                            <option value="">All Users</option>
+                            <option value="active" selected="@(ViewBag.ActivityStatus == "active")">Active Users</option>
+                            <option value="inactive" selected="@(ViewBag.ActivityStatus == "inactive")">Inactive Users</option>
+                        </select>
+                    </div>
+
+                    <!-- Search and Reset Buttons -->
+                    <div class="col-12 col-lg-2 col-md-6">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary rounded-3 flex-grow-1">
+                                <i class="bi bi-search me-1"></i>Search
+                            </button>
+
+                            <a asp-controller="Admin"
+                               asp-action="UserSummary"
+                               class="btn btn-outline-secondary rounded-3"
+                               title="Reset Filters">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- ==================== User Table Section ==================== -->
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <!-- Table Heading -->
+        <div class="card-header bg-white border-0 px-3 px-md-4 pt-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="fw-bold mb-1">All Users</h5>
+                    <p class="text-muted small mb-0">
+                        Showing @((totalRecords == 0) ? 0 : ((currentPage - 1) * pageSize) + 1)
+                        -
+                        @(Math.Min(currentPage * pageSize, totalRecords))
+                        of @totalRecords users
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responsive Table -->
+        <div class="card-body p-0">
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <!-- Table Header -->
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3">#</th>
+                            <th class="py-3">User Name</th>
+                            <th class="py-3">Email</th>
+                            <th class="py-3">Role</th>
+                            <th class="py-3 text-center">Total Logins</th>
+                            <th class="py-3 text-center">Total Logouts</th>
+                            <th class="py-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <!-- Table Body -->
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            int serial = (currentPage - 1) * pageSize + 1;
+
+                            foreach (var user in Model)
+                            {
+                                <tr>
+                                    <!-- Serial Number -->
+                                    <td class="ps-4 fw-semibold">@serial</td>
+
+                                    <!-- User Name -->
+                                    <td>
+                                        <span class="fw-semibold">@user.FullName</span>
+                                    </td>
+
+                                    <!-- Email -->
+                                    <td>@user.Email</td>
+
+                                    <!-- User Role -->
+                                    <td>
+                                        @if (user.Role == "admin")
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">Admin</span>
+                                        }
+                                        else if (user.Role == "company")
+                                        {
+                                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">Company</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">Job Seeker</span>
+                                        }
+                                    </td>
+
+                                    <!-- Total Login Count -->
+                                    <td class="text-center">
+                                        <span class="fw-semibold">@user.TotalLogins</span>
+                                    </td>
+
+                                    <!-- Total Logout Count -->
+                                    <td class="text-center">
+                                        <span class="fw-semibold">@user.TotalLogouts</span>
+                                    </td>
+
+                                    <!-- View Login History -->
+                                    <td class="text-center">
+                                        <a asp-controller="Admin"
+                                           asp-action="UserLoginHistory"
+                                           asp-route-id="@user.UserId"
+                                           class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                            <i class="bi bi-eye me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                serial++;
+                            }
+                        }
+                        else
+                        {
+                            <!-- Empty State -->
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-people text-muted fs-1"></i>
+                                    <h6 class="fw-semibold mt-3">No Users Found</h6>
+                                    <p class="text-muted small mb-0">
+                                        Try changing your search or filter options.
+                                    </p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+        <!-- ==================== Pagination Section ==================== -->
+        @if (totalPages > 1)
+        {
+            <div class="card-footer bg-white border-0 px-3 px-md-4 py-4">
+
+                <nav aria-label="User pagination">
+                    <ul class="pagination justify-content-center align-items-center flex-wrap gap-2 mb-0">
+
+                        <!-- Previous Page -->
+                        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                            <a class="page-link rounded-3"
+                               asp-controller="Admin"
+                               asp-action="UserSummary"
+                               asp-route-page="@(currentPage - 1)"
+                               asp-route-pageSize="@pageSize"
+                               asp-route-searchName="@ViewBag.SearchName"
+                               asp-route-role="@ViewBag.SelectedRole"
+                               asp-route-activityStatus="@ViewBag.ActivityStatus">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link rounded-3"
+                                   asp-controller="Admin"
+                                   asp-action="UserSummary"
+                                   asp-route-page="@i"
+                                   asp-route-pageSize="@pageSize"
+                                   asp-route-searchName="@ViewBag.SearchName"
+                                   asp-route-role="@ViewBag.SelectedRole"
+                                   asp-route-activityStatus="@ViewBag.ActivityStatus">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Next Page -->
+                        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                            <a class="page-link rounded-3"
+                               asp-controller="Admin"
+                               asp-action="UserSummary"
+                               asp-route-page="@(currentPage + 1)"
+                               asp-route-pageSize="@pageSize"
+                               asp-route-searchName="@ViewBag.SearchName"
+                               asp-route-role="@ViewBag.SelectedRole"
+                               asp-route-activityStatus="@ViewBag.ActivityStatus">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<!-- ==================== Custom CSS ==================== -->
+<style>
+    /* Statistics card hover effect */
+    .card {
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Table styling */
+    .table th {
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .table td {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    /* Pagination styling */
+    .pagination .page-link {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e3e5f2;
+        color: #6c4bff;
+        background-color: #fff;
+        font-size: 0.875rem;
+        padding: 0;
+        transition: all 0.2s ease;
+    }
+
+    /* Pagination hover */
+    .pagination .page-link:hover {
+        background-color: #f3f1ff;
+        border-color: #6c4bff;
+        color: #6c4bff;
+    }
+
+    /* Active page */
+    .pagination .page-item.active .page-link {
+        background-color: #6c4bff;
+        border-color: #6c4bff;
+        color: #fff;
+    }
+
+    /* Disabled pagination */
+    .pagination .page-item.disabled .page-link {
+        color: #adb5bd;
+        background-color: #f8f9fa;
+        border-color: #e3e5f2;
+        pointer-events: none;
+    }
+</style>
+
+<!-- ==================== Responsive Page Size Script ==================== -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const pageSizeInput = document.getElementById("pageSizeInput");
+        const searchForm = document.getElementById("userSearchForm");
+
+        // Set page size according to screen width
+        function getPageSize() {
+            if (window.innerWidth < 768) {
+                return 6;   // Mobile
+            }
+
+            if (window.innerWidth < 992) {
+                return 9;   // Tablet
+            }
+
+            return 12;      // Desktop
+        }
+
+        // Update page size when the search form is submitted
+        searchForm.addEventListener("submit", function () {
+            pageSizeInput.value = getPageSize();
+        });
+
+        // Check current page size on page load
+        const currentPageSize = parseInt(pageSizeInput.value);
+        const expectedPageSize = getPageSize();
+
+        // Reload only when page size does not match screen size
+        if (currentPageSize !== expectedPageSize) {
+            const url = new URL(window.location.href);
+
+            url.searchParams.set("pageSize", expectedPageSize);
+            url.searchParams.set("page", 1);
+
+            window.location.href = url.toString();
+        }
+
+        // Update page size when screen is resized
+        let resizeTimeout;
+
+        window.addEventListener("resize", function () {
+            clearTimeout(resizeTimeout);
+
+            resizeTimeout = setTimeout(function () {
+                const newPageSize = getPageSize();
+
+                if (newPageSize !== parseInt(pageSizeInput.value)) {
+                    const url = new URL(window.location.href);
+
+                    url.searchParams.set("pageSize", newPageSize);
+                    url.searchParams.set("page", 1);
+
+                    window.location.href = url.toString();
+                }
+            }, 300);
+        });
+
+    });
+</script>

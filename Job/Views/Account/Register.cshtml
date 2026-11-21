@@ -1,0 +1,121 @@
+﻿
+@model Job.Models.Register
+
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<!-- Registration Page Container -->
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5" style="padding-top: 90px !important;">
+
+    <!-- Registration Card -->
+    <div class="card border-0 shadow-sm rounded-4 w-100" style="max-width: 500px;">
+
+        <div class="card-body p-4 p-md-5">
+
+            <!-- Registration Form -->
+            <form asp-controller="Account" asp-action="Register" method="post">
+
+                <!-- Fieldset and Legend -->
+                <fieldset class="border rounded-4 p-3 p-md-4">
+
+                    <!-- Form Title -->
+                    <legend class="float-none w-auto px-2 fw-bold fs-3">
+                        Create Account
+                    </legend>
+
+                    <!-- Form Description -->
+                    <p class="text-secondary text-center mb-4">
+                        Create your CareerBridge account
+                    </p>
+
+                    <!-- Model Level Validation Message -->
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <!-- Full Name Field -->
+                    <div class="mb-3">
+                        <input asp-for="FullName" class="form-control border-0 border-bottom border-2 rounded-0 shadow-none bg-transparent px-2 py-1" placeholder="Name" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <input asp-for="Email" class="form-control border-0 border-bottom border-2 rounded-0 shadow-none bg-transparent px-2 py-1" placeholder="Email" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <input asp-for="Password" type="password" class="form-control border-0 border-bottom border-2 rounded-0 shadow-none bg-transparent px-2 py-1" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="mb-3">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control border-0 border-bottom border-2 rounded-0 shadow-none bg-transparent px-2 py-1" placeholder="Confirm Password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Account Type Selection -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold small">
+                            I WANT TO JOIN AS
+                        </label>
+
+                        <div class="row g-2">
+
+                            <!-- Job Seeker Option -->
+                            <div class="col-6">
+                                <input asp-for="Role" type="radio" class="btn-check" id="jobSeeker" value="job_seeker" autocomplete="off" />
+                                <label for="jobSeeker" class="btn btn-outline-primary w-100 p-2 rounded-3">
+                                    <span class="fw-semibold">Job Seeker</span>
+                                </label>
+                            </div>
+
+                            <!-- Recruiter Option -->
+                            <div class="col-6">
+                                <input asp-for="Role" type="radio" class="btn-check" id="company" value="company" autocomplete="off" />
+                                <label for="company" class="btn btn-outline-primary w-100 p-2 rounded-3">
+                                    <span class="fw-semibold">Recruiter</span>
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <!-- Account Type Validation -->
+                        <span asp-validation-for="Role" class="text-danger small"></span>
+
+                    </div>
+
+                    <!-- Centered Registration Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary rounded-3 px-5 py-2 fw-bold">
+                            Create Account
+                        </button>
+                    </div>
+
+                    <!-- Login Page Link -->
+                    <div class="text-center mt-4">
+                        <span class="text-secondary">
+                            Already have an account?
+                        </span>
+
+                        <a asp-controller="Account" asp-action="Login" class="text-primary text-decoration-none fw-semibold">
+                            Sign in
+                        </a>
+                    </div>
+
+                </fieldset>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Client Side Validation Scripts -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,353 @@
+﻿
+@model Job.Models.CompanyJobPost
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+<!-- Job Details Section -->
+<section class="details-section">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <!-- Back Button -->
+                <div class="mb-3">
+                    <a href="@(Context.Request.Headers.Referer.ToString().Contains("JobSeeker") ? Url.Action("AppliedJobs", "JobSeeker") : Url.Action("Index", "Home"))"
+                       class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+                        <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
+                </div>
+
+                <!-- Job Details Card -->
+                <div class="details-card">
+
+                    <!-- Top Gradient Border -->
+                    <div class="details-top-border"></div>
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <!-- Application Message -->
+                        @if (TempData["Message"] != null || TempData["Error"] != null)
+                        {
+                            var message = TempData["Message"] ?? TempData["Error"];
+                            var messageType = TempData["MessageType"]?.ToString() ?? "error";
+                            var alertClass = messageType == "success" ? "alert-success" : messageType == "warning" ? "alert-warning" : "alert-danger";
+
+                            <div class="alert @alertClass alert-dismissible fade show" role="alert">
+                                @message
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        <!-- Job Title -->
+                        <div class="mb-4">
+                            <span class="details-eyebrow">
+                                <i class="bi bi-briefcase"></i> Job Opportunity
+                            </span>
+
+                            <h2 class="details-title mt-3 mb-2">@Model.JobTitle</h2>
+                        </div>
+
+                        <hr class="details-divider" />
+
+                        <!-- Job Information -->
+                        <div class="mb-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-info-circle"></i> Job Information
+                            </h5>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-building info-icon"></i>
+                                        <div>
+                                            <small>Company Name</small>
+                                            <p>@Model.Company?.CompanyName</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-briefcase info-icon"></i>
+                                        <div>
+                                            <small>Job Type</small>
+                                            <p>@Model.JobType</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-people info-icon"></i>
+                                        <div>
+                                            <small>Total Vacancy</small>
+                                            <p>@Model.Vacancy</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-geo-alt info-icon"></i>
+                                        <div>
+                                            <small>Location</small>
+                                            <p>@Model.Location</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-cash-stack info-icon"></i>
+                                        <div>
+                                            <small>Salary</small>
+                                            <p>@(string.IsNullOrWhiteSpace(Model.Salary) ? "Negotiable" : Model.Salary)</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-award info-icon"></i>
+                                        <div>
+                                            <small>Experience Required</small>
+                                            <p>@(string.IsNullOrWhiteSpace(Model.ExperienceRequired) ? "Not specified" : Model.ExperienceRequired)</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-box">
+                                        <i class="bi bi-calendar-event info-icon"></i>
+                                        <div>
+                                            <small>Application Deadline</small>
+                                            <p>@Model.ApplicationDeadline.ToString("dd MMM yyyy")</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr class="details-divider" />
+
+                        <!-- Job Description -->
+                        <div class="mb-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-file-text"></i> Job Description
+                            </h5>
+
+                            <div class="description-box">
+                                <p>@Model.Description</p>
+                            </div>
+                        </div>
+
+                        <hr class="details-divider" />
+
+                        <!-- Apply Now Button -->
+                        <div class="text-end">
+                            <a asp-controller="Home"
+                               asp-action="Apply"
+                               asp-route-id="@Model.JobPostId"
+                               class="apply-btn">
+                                Apply Now <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+
+    /* Main Background */
+    .details-section {
+        width: 100%;
+        background-color: #E5E7F2;
+        min-height: 100vh;
+    }
+
+    /* Back Button */
+    .details-section .btn-outline-secondary {
+        transition: all .3s ease;
+    }
+
+    .details-section .btn-outline-secondary:hover {
+        transform: translateX(-3px);
+    }
+
+    /* Details Card */
+    .details-card {
+        position: relative;
+        background: #fff;
+        border-radius: 1.25rem;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(27, 31, 59, .09);
+        transition: box-shadow .3s ease;
+    }
+
+    .details-card:hover {
+        box-shadow: 0 14px 35px rgba(27, 31, 59, .13);
+    }
+
+    /* Gradient Top Border */
+    .details-top-border {
+        height: 5px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    /* Heading */
+    .details-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .4rem .9rem;
+        border-radius: 999px;
+        background: #f3f1ff;
+        color: #6c4bff;
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .details-title {
+        font-weight: 800;
+        color: #1b1f3b;
+        line-height: 1.35;
+    }
+
+    .details-category {
+        color: #6b7090;
+        font-size: .9rem;
+    }
+
+    /* Section Heading */
+    .section-title {
+        font-weight: 700;
+        color: #1b1f3b;
+        margin-bottom: 1.25rem;
+    }
+
+    .section-title i {
+        color: #6c4bff;
+        margin-right: .4rem;
+    }
+
+    /* Information Boxes */
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        height: 100%;
+        padding: 1rem;
+        border-radius: 14px;
+        background: #f8f8fd;
+        border: 1px solid #ececf6;
+        transition: all .3s ease;
+    }
+
+    .info-box:hover {
+        background: #f3f1ff;
+        border-color: #d9d1ff;
+        transform: translateY(-3px);
+    }
+
+    .info-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: #f0edff;
+        color: #6c4bff;
+        font-size: 1.15rem;
+    }
+
+    .info-box small {
+        display: block;
+        color: #858aa5;
+        font-size: .75rem;
+        margin-bottom: .2rem;
+    }
+
+    .info-box p {
+        color: #1b1f3b;
+        font-size: .9rem;
+        font-weight: 600;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    /* Divider */
+    .details-divider {
+        border-color: #e5e6f0;
+        opacity: 1;
+        margin: 1.75rem 0;
+    }
+
+    /* Description */
+    .description-box {
+        padding: 1.25rem;
+        background: #f8f8fd;
+        border-radius: 14px;
+        border: 1px solid #ececf6;
+    }
+
+    .description-box p {
+        color: #626984;
+        line-height: 1.8;
+        white-space: pre-line;
+        margin: 0;
+    }
+
+    /* Apply Button */
+    .apply-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: .7rem 1.8rem;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #6c4bff, #8b6dff);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all .3s ease;
+    }
+
+    .apply-btn:hover {
+        color: #fff;
+        background: linear-gradient(90deg, #5232e5, #7250ed);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 18px rgba(108, 75, 255, .25);
+    }
+
+    /* Mobile */
+    @@media (max-width: 576px) {
+        .details-section .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .details-card .card-body {
+            padding: 1.25rem !important;
+        }
+
+        .details-title {
+            font-size: 1.5rem;
+        }
+
+        .apply-btn {
+            width: 100%;
+        }
+    }
+
+</style>

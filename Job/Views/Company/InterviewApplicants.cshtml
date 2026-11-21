@@ -1,0 +1,321 @@
+﻿
+@model List<Job.Models.JobApplication>
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Interview Applicants";
+    var applicants = Model ?? new List<Job.Models.JobApplication>();
+    int totalInterviews = applicants.Count;
+    int totalJobPosts = applicants.Where(a => a.CompanyJobPost != null).Select(a => a.JobPostId).Distinct().Count();
+    int recentUpdates = applicants.Count(a => Convert.ToDateTime(a.UpdatedAt) >= DateTime.Now.AddDays(-7));
+    var jobTitles = applicants.Where(a => a.CompanyJobPost != null).Select(a => a.CompanyJobPost.JobTitle).Distinct().OrderBy(j => j).ToList();
+}
+
+<style>
+    .interview-page { min-height:100vh; background:#E5E7F2; }
+    .interview-card { position:relative; overflow:hidden; background:#fff; border:0; border-radius:16px; transition:.3s; }
+    .interview-card::before { content:""; display:block; height:4px; background:linear-gradient(90deg,#6c4bff,#00c2a8); }
+    .interview-card:hover { transform:translateY(-4px); box-shadow:0 10px 22px rgba(108,75,255,.15)!important; }
+    .summary-number { font-size:23px; font-weight:700; color:#212529; }
+    .summary-label { font-size:12px; color:#6c757d; }
+    .dotted-divider { border-top:2px dashed #c5c7d8; }
+    .interview-page .table { font-size:13px; white-space:nowrap; margin:0; }
+    .interview-page .table th { background:#f8f9fa; color:#495057; font-size:12px; font-weight:600; }
+    .interview-page .table th,.interview-page .table td { padding:11px 13px; vertical-align:middle; }
+    .applicant-name { font-weight:600; color:#212529; }
+    .applicant-email { font-size:11px; color:#6c757d; }
+    .status-badge { background:#d1e7dd; color:#146c43; padding:5px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+    .interview-page .form-control,.interview-page .form-select { font-size:13px; min-height:36px; border-radius:8px; }
+    .view-btn { font-size:12px; padding:5px 11px; border-radius:7px; white-space:nowrap; }
+    .empty-state { padding:40px 15px; text-align:center; }
+    .empty-icon { font-size:36px; color:#adb5bd; }
+    .interview-page .page-link { font-size:12px; padding:6px 11px; }
+    .interview-page .page-item.active .page-link { background:#6c4bff; border-color:#6c4bff; }
+    @@media(max-width:576px) { .summary-number { font-size:20px; } }
+</style>
+
+<div class="interview-page py-3">
+    <div class="container">
+
+        <!-- Back Button -->
+        <a asp-controller="Company" asp-action="Dashboard"
+           class="btn btn-outline-secondary rounded-pill px-4 mt-2 mb-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+
+        <!-- Page Header -->
+        <div class="mb-3">
+            <h4 class="fw-bold mb-1">Interview Applicants</h4>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-4">
+                <div class="interview-card shadow-sm h-100">
+                    <div class="p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-2">
+                            <i class="bi bi-people fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="summary-number">@totalInterviews</div>
+                            <div class="summary-label">Total Interviews</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-4">
+                <div class="interview-card shadow-sm h-100">
+                    <div class="p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-success bg-opacity-10 text-success p-2">
+                            <i class="bi bi-briefcase fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="summary-number">@totalJobPosts</div>
+                            <div class="summary-label">Job Posts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-4">
+                <div class="interview-card shadow-sm h-100">
+                    <div class="p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-3 bg-warning bg-opacity-10 text-warning p-2">
+                            <i class="bi bi-clock-history fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="summary-number">@recentUpdates</div>
+                            <div class="summary-label">Recent Updates (7 Days)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview List -->
+        <div class="interview-card shadow-sm">
+            <div class="p-3">
+                <h6 class="fw-bold mb-0">Interview List</h6>
+            </div>
+            <div class="dotted-divider"></div>
+
+            <!-- Search and Filters -->
+            <div class="p-3">
+                <div class="row g-2">
+                    <div class="col-12 col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" id="searchApplicant" class="form-control"
+                                   placeholder="Search name or email..." />
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <select id="jobFilter" class="form-select">
+                            <option value="">All Job Positions</option>
+                            @foreach (var job in jobTitles)
+                            {
+                                <option value="@job">@job</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <select id="sortApplicants" class="form-select">
+                            <option value="newest">Latest Updated</option>
+                            <option value="oldest">Oldest Updated</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dotted-divider"></div>
+
+            <!-- Applicants Table -->
+            <div class="table-responsive">
+                @if (applicants.Any())
+                {
+                    <table class="table table-hover align-middle" id="applicantTable">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Job Position</th>
+                                <th>Job Type</th>
+                                <th>Applied Date</th>
+                                <th>Last Updated</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicantTableBody">
+                            @foreach (var applicant in applicants)
+                            {
+                                var updatedDate = Convert.ToDateTime(applicant.UpdatedAt);
+                                var appliedDate = Convert.ToDateTime(applicant.AppliedAt);
+                                var applicantName = applicant.User?.FullName ?? "N/A";
+                                var applicantEmail = applicant.User?.Email ?? "N/A";
+                                var jobTitle = applicant.CompanyJobPost?.JobTitle ?? "N/A";
+                                var jobType = applicant.CompanyJobPost?.JobType ?? "N/A";
+
+                                <tr class="applicant-row"
+                                    data-name="@applicantName.ToLower()"
+                                    data-email="@applicantEmail.ToLower()"
+                                    data-job="@jobTitle"
+                                    data-updated="@updatedDate.ToString("yyyy-MM-ddTHH:mm:ss")">
+                                    <td>
+                                        <div class="applicant-name">@applicantName</div>
+                                        <div class="applicant-email">@applicantEmail</div>
+                                    </td>
+                                    <td class="fw-medium">@jobTitle</td>
+                                    <td>@jobType</td>
+                                    <td>@appliedDate.ToString("dd MMM yyyy")</td>
+                                    <td>@updatedDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="status-badge">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Interview
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Company" asp-action="ApplicantDetails"
+                                           asp-route-id="@applicant.ApplicationId"
+                                           class="btn btn-outline-primary view-btn">
+                                            <i class="bi bi-eye me-1"></i>View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div id="noSearchResults" class="empty-state d-none">
+                        <i class="bi bi-search empty-icon"></i>
+                        <h6 class="fw-semibold mt-2">No Applicants Found</h6>
+                        <p class="text-muted small mb-0">Try changing your search or filter.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x empty-icon"></i>
+                        <h6 class="fw-semibold mt-2">No Interview Applicants Yet</h6>
+                        <p class="text-muted small mb-0">Applicants selected for interviews will appear here.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (applicants.Any())
+            {
+                <div class="dotted-divider"></div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
+                    <small class="text-muted" id="paginationInfo">
+                        Showing 0 of @totalInterviews applicants
+                    </small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Search, Filter, Sorting and Pagination -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchApplicant");
+    const jobFilter = document.getElementById("jobFilter");
+    const sortSelect = document.getElementById("sortApplicants");
+    const tableBody = document.getElementById("applicantTableBody");
+    const pagination = document.getElementById("pagination");
+    const paginationInfo = document.getElementById("paginationInfo");
+    const noResults = document.getElementById("noSearchResults");
+
+    if (!tableBody) return;
+
+    const rows = Array.from(tableBody.querySelectorAll(".applicant-row"));
+    const pageSize = 8;
+    let currentPage = 1;
+    let filteredRows = [...rows];
+
+    function filterAndSort() {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const selectedJob = jobFilter.value;
+
+        filteredRows = rows.filter(row =>
+            (row.dataset.name.includes(searchValue) ||
+             row.dataset.email.includes(searchValue)) &&
+            (selectedJob === "" || row.dataset.job === selectedJob)
+        );
+
+        filteredRows.sort((a, b) =>
+            sortSelect.value === "oldest"
+                ? a.dataset.updated.localeCompare(b.dataset.updated)
+                : b.dataset.updated.localeCompare(a.dataset.updated)
+        );
+
+        currentPage = 1;
+        renderTable();
+    }
+
+    function renderTable() {
+        rows.forEach(row => row.style.display = "none");
+
+        const totalPages = Math.ceil(filteredRows.length / pageSize);
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+
+        filteredRows.slice(start, end).forEach(row => {
+            row.style.display = "";
+            tableBody.appendChild(row);
+        });
+
+        if (noResults)
+            noResults.classList.toggle("d-none", filteredRows.length !== 0);
+
+        if (paginationInfo) {
+            const showingStart = filteredRows.length === 0 ? 0 : start + 1;
+            const showingEnd = Math.min(end, filteredRows.length);
+            paginationInfo.textContent =
+                `Showing ${showingStart}-${showingEnd} of ${filteredRows.length} applicants`;
+        }
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        pagination.innerHTML = "";
+        if (totalPages <= 1) return;
+
+        function addPage(label, page, disabled, active = false) {
+            const item = document.createElement("li");
+            item.className = `page-item ${disabled ? "disabled" : ""} ${active ? "active" : ""}`;
+            const link = document.createElement("a");
+            link.className = "page-link";
+            link.href = "#";
+            link.textContent = label;
+
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (!disabled) {
+                    currentPage = page;
+                    renderTable();
+                }
+            });
+
+            item.appendChild(link);
+            pagination.appendChild(item);
+        }
+
+        addPage("Previous", currentPage - 1, currentPage === 1);
+        for (let i = 1; i <= totalPages; i++)
+            addPage(i, i, false, currentPage === i);
+        addPage("Next", currentPage + 1, currentPage === totalPages);
+    }
+
+    searchInput.addEventListener("input", filterAndSort);
+    jobFilter.addEventListener("change", filterAndSort);
+    sortSelect.addEventListener("change", filterAndSort);
+
+    filterAndSort();
+});
+</script>

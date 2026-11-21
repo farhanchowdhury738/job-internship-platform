@@ -1,0 +1,51 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\farha\\Downloads\\Dotnet\\Job\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E1FAFAA9-7224-6DDD-ED10-86D1807544C7}|Job\\Job.csproj|c:\\users\\farha\\downloads\\dotnet\\job\\job\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E1FAFAA9-7224-6DDD-ED10-86D1807544C7}|Job\\Job.csproj|solutionrelative:job\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\farha\\Downloads\\Dotnet\\Job\\Job\\appsettings.json",
+              "RelativeDocumentMoniker": "Job\\appsettings.json",
+              "ToolTip": "C:\\Users\\farha\\Downloads\\Dotnet\\Job\\Job\\appsettings.json",
+              "RelativeToolTip": "Job\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-21T11:16:14.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 1007,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

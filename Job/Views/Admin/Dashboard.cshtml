@@ -1,0 +1,93 @@
+﻿
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<section class="dashboard-section">
+    <div class="container py-5">
+
+        <!-- Dashboard Title -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark mt-3">Admin Dashboard</h2>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row g-4">
+
+            <!-- Users Summary -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Admin"
+                   asp-action="UserSummary"
+                   class="text-decoration-none text-dark">
+
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+
+                        <div class="card-body p-4">
+
+                            <!-- Icon + Total Users -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center"
+                                     style="width:50px;height:50px;">
+                                    <i class="bi bi-people fs-4"></i>
+                                </div>
+
+                                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">
+                                    @ViewBag.TotalUsers
+                                </span>
+
+                            </div>
+
+                            <h5 class="fw-bold">Users Summary</h5>
+
+                            <p class="text-muted small mb-0">
+                                View and manage all registered users.
+                            </p>
+
+                            <!-- Card Footer -->
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>View Users</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    .dashboard-section {
+        width: 100%;
+        min-height: 100vh;
+        background: #E5E7F2;
+    }
+
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .dashboard-card::before {
+        content: "";
+        display: block;
+        height: 5px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(108,75,255,.18) !important;
+    }
+
+    .dotted-divider {
+        border-top: 2px dashed #e3e5f2;
+        margin-top: 1.25rem;
+    }
+</style>

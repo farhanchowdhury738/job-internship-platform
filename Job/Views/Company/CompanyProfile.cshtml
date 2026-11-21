@@ -1,0 +1,164 @@
+﻿@model Job.Models.Company
+
+@{
+    ViewData["Title"] = "Company Profile";
+    bool isEditing = Model.CompanyId > 0;
+}
+
+<section class="profile-section">
+    <div class="container py-3">
+
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a asp-controller="Company" asp-action="Dashboard"
+               class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Page Header -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark mb-1">Company Profile</h2>
+        </div>
+
+        <!-- Success Message -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Profile Warning Message -->
+        @if (TempData["ProfileWarning"] != null)
+        {
+            <div class="alert alert-warning alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                @TempData["ProfileWarning"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Company Profile Card -->
+        <div class="card border-0 rounded-4 shadow-sm overflow-hidden">
+
+            <div class="bg-primary" style="height: 5px;"></div>
+
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Form Heading -->
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+                        <i class="bi bi-building fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">
+                            @(isEditing ? "Update Company Information" : "Create Company Profile")
+                        </h5>
+                        <p class="text-muted small mb-0">
+                            Enter your company details below.
+                        </p>
+                    </div>
+                </div>
+
+                <hr class="text-secondary opacity-25 my-4" />
+
+                <!-- Company Profile Form -->
+                <form asp-controller="Company" asp-action="CompanyProfile" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Company Name -->
+                    <div class="mb-4">
+                        <label asp-for="CompanyName" class="form-label fw-semibold text-dark">
+                            Company Name
+                        </label>
+                        <input asp-for="CompanyName" class="form-control rounded-3 py-2"
+                               placeholder="Enter company name" />
+                        <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Company Email -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">Company Email</label>
+                        <input type="email" class="form-control rounded-3 py-2 bg-light"
+                               value="@ViewBag.CompanyEmail" readonly />
+                        <small class="text-muted mt-2 d-block">
+                            <i class="bi bi-lock-fill me-1"></i>
+                            Company email cannot be changed.
+                        </small>
+                    </div>
+
+                    <!-- Company Logo -->
+                    <div class="mb-4">
+                        <label asp-for="CompanyLogo" class="form-label fw-semibold text-dark">
+                            Company Logo URL
+                        </label>
+                        <input asp-for="CompanyLogo" class="form-control rounded-3 py-2"
+                               placeholder="Enter company logo URL" />
+                        <span asp-validation-for="CompanyLogo" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold text-dark">
+                            Company Description
+                        </label>
+                        <textarea asp-for="Description" class="form-control rounded-3"
+                                  rows="5" placeholder="Write about your company..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Website -->
+                    <div class="mb-4">
+                        <label asp-for="WebsiteUrl" class="form-label fw-semibold text-dark">
+                            Website URL
+                        </label>
+                        <input asp-for="WebsiteUrl" class="form-control rounded-3 py-2"
+                               placeholder="https://example.com" />
+                        <span asp-validation-for="WebsiteUrl" class="text-danger small"></span>
+                    </div>
+
+                    <!-- LinkedIn -->
+                    <div class="mb-4">
+                        <label asp-for="LinkedInUrl" class="form-label fw-semibold text-dark">
+                            LinkedIn URL
+                        </label>
+                        <input asp-for="LinkedInUrl" class="form-control rounded-3 py-2"
+                               placeholder="https://linkedin.com/company/..." />
+                        <span asp-validation-for="LinkedInUrl" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="text-secondary opacity-25 my-4" />
+
+                    <!-- Buttons -->
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+                            <i class="bi @(isEditing ? "bi-check-lg" : "bi-plus-lg") me-1"></i>
+                            @(isEditing ? "Update Profile" : "Create Profile")
+                        </button>
+
+                        <a asp-controller="Company" asp-action="Dashboard"
+                           class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .profile-section {
+    background-color: #E5E7F2;
+    min-height: 100vh;
+}
+</style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

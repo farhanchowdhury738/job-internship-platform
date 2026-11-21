@@ -1,0 +1,111 @@
+﻿
+@model IEnumerable<Job.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "Applied Jobs";
+}
+
+<style>
+    .applied-page { min-height:100vh; background:#E5E7F2; }
+    .applied-job-card { position:relative; overflow:hidden; border:0; border-radius:16px; transition:.3s; }
+    .applied-job-card::before { content:""; display:block; height:4px; background:linear-gradient(90deg,#6c4bff,#00c2a8); }
+    .applied-job-card:hover { transform:translateY(-4px); box-shadow:0 10px 22px rgba(108,75,255,.15)!important; }
+    .applied-divider { border-top:2px dashed #c5c7d8; }
+</style>
+
+<div class="applied-page py-3">
+    <div class="container">
+
+        <!-- Back Button -->
+        <a asp-controller="JobSeeker" asp-action="Dashboard"
+           class="btn btn-outline-secondary rounded-pill px-4 mt-2 mb-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+
+        <!-- Page Header -->
+        <div class="mb-3">
+            <h4 class="fw-bold mb-1">Applied Job Lists</h4>
+        </div>
+
+        <!-- Application List -->
+        @if (Model == null || !Model.Any())
+        {
+            <div class="card applied-job-card shadow-sm text-center">
+                <div class="card-body py-5">
+                    <i class="bi bi-briefcase fs-1 text-muted mb-3"></i>
+                    <h5 class="fw-bold">No Applications Yet</h5>
+                    <p class="text-muted small mb-3">You haven't applied for any jobs yet.</p>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="btn btn-primary btn-sm rounded-pill px-4">
+                        Browse Jobs <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var application in Model)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card applied-job-card shadow-sm h-100">
+                            <div class="card-body p-3">
+
+                                <!-- Job Title -->
+                                <h6 class="fw-bold mb-2">
+                                    @application.CompanyJobPost?.JobTitle
+                                </h6>
+
+                                <!-- Company and Status -->
+                                <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                                    <span class="text-muted small text-truncate">
+                                        <i class="bi bi-building me-1"></i>
+                                        @application.CompanyJobPost?.Company?.CompanyName
+                                    </span>
+
+                                    <span class="badge rounded-pill bg-@(
+                                        application.ApplicationStatus == "selected" ? "success" :
+                                        application.ApplicationStatus == "rejected" ? "danger" :
+                                        application.ApplicationStatus == "interview" ? "primary" :
+                                        application.ApplicationStatus == "shortlisted" ? "info" :
+                                        application.ApplicationStatus == "under_review" ? "warning" : "secondary"
+                                    ) flex-shrink-0">
+                                        @application.ApplicationStatus.Replace("_", " ")
+                                    </span>
+                                </div>
+
+                                <div class="applied-divider mb-3"></div>
+
+                                <!-- Job Details -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted d-block mb-1">Job Type</small>
+                                        <span class="fw-semibold small">
+                                            @application.CompanyJobPost?.JobType
+                                        </span>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted d-block mb-1">Applied Date</small>
+                                        <span class="fw-semibold small">
+                                            @application.AppliedAt.ToLocalTime().ToString("dd-MM-yyyy")
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Job Details Link -->
+                                <div class="text-end mt-3">
+                                    <a asp-controller="Home" asp-action="Details"
+                                       asp-route-id="@application.JobPostId"
+                                       class="text-primary text-decoration-none fw-semibold small">
+                                        View Details <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

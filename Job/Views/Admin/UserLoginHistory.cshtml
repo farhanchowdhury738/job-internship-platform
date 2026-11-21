@@ -1,0 +1,188 @@
+﻿
+@model IEnumerable<Job.Models.UserLoginHistory>
+
+@{
+    ViewData["Title"] = "User Login History";
+}
+
+<section class="dashboard-section">
+    <div class="container py-5">
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-controller="Admin"
+               asp-action="UserSummary"
+               class="btn btn-outline-secondary rounded-pill px-4 mt-2">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to UserSummary
+            </a>
+        </div>
+
+        <!-- User Information -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark">Login History</h2>
+            <p class="text-muted small mb-1">
+                User: <strong>@ViewBag.UserName</strong>
+            </p>
+            <p class="text-muted small mb-0">
+                Email: @ViewBag.UserEmail
+            </p>
+        </div>
+
+        <!-- Login History Table -->
+        <div class="card history-card border-0 rounded-4 shadow-sm">
+
+            <div class="card-body p-0">
+
+                <!-- Card Header -->
+                <div class="p-4">
+                    <h5 class="fw-bold mb-1">Login Activity</h5>
+                    <p class="text-muted small mb-0">
+                        Complete login and logout records.
+                    </p>
+                </div>
+
+                <div class="history-divider"></div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th class="ps-4">#</th>
+                                <th>IP Address</th>
+                                <th>Login Time</th>
+                                <th>Logout Time</th>
+                                <th>Browser</th>
+                                <th>Device</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                int count = 1;
+
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-semibold">@count</td>
+
+                                        <td>
+                                            @(item.IpAddress ?? "N/A")
+                                        </td>
+
+                                        <td class="text-nowrap">
+                                            @item.LoginTime.ToString("dd MMM yyyy, hh:mm tt")
+                                        </td>
+
+                                        <td class="text-nowrap">
+                                            @(
+                                                item.LogoutTime.HasValue
+                                                ? item.LogoutTime.Value.ToString("dd MMM yyyy, hh:mm tt")
+                                                : "Not Logged Out"
+                                            )
+                                        </td>
+
+                                        <td>
+                                            @(item.BrowserName ?? "N/A")
+                                        </td>
+
+                                        <td>
+                                            @(item.DeviceName ?? "N/A")
+                                        </td>
+
+                                        <td>
+                                            @if (item.IsActive)
+                                            {
+                                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                                    Active
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-2">
+                                                    Logged Out
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+
+                                    count++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        <i class="bi bi-clock-history fs-1 text-muted"></i>
+                                        <p class="text-muted mt-2 mb-0">
+                                            No login history found.
+                                        </p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .dashboard-section {
+        width: 100%;
+        min-height: 100vh;
+        background: #E5E7F2;
+    }
+
+    .history-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .history-card::before {
+        content: "";
+        display: block;
+        height: 5px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    .history-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(108,75,255,.15) !important;
+    }
+
+    .history-divider {
+        border-top: 2px dashed #e3e5f2;
+        margin: 0 1.5rem;
+    }
+
+    .history-card table {
+        font-size: 13px;
+    }
+
+    .history-card thead th {
+        background: #f8f9fc;
+        color: #555;
+        font-weight: 600;
+        font-size: 12px;
+        white-space: nowrap;
+        padding: 14px 12px;
+    }
+
+    .history-card tbody td {
+        padding: 13px 12px;
+        color: #555;
+    }
+
+    .history-card tbody tr:last-child td {
+        border-bottom: 0;
+    }
+</style>

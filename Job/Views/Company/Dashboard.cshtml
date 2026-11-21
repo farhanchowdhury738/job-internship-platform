@@ -1,0 +1,158 @@
+﻿@model Job.Models.User
+
+@{
+    ViewData["Title"] = "Company Dashboard";
+}
+
+<section class="dashboard-section">
+    <div class="container py-5">
+
+        <!-- Welcome Section -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark mt-3">Welcome, @ViewBag.CompanyName!</h2>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row g-4">
+
+            <!-- Company Profile -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Company" asp-action="CompanyProfile" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px; height:50px;">
+                                <i class="bi bi-building fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Company Profile</h5>
+                            <p class="text-muted small">Manage your company information and details.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>Manage Profile</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Manage Job Posts -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Company" asp-action="ManageJobs" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                                    <i class="bi bi-briefcase fs-4"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">@ViewBag.JobPostCount</span>
+                            </div>
+                            <h5 class="fw-bold">Manage Job Posts</h5>
+                            <p class="text-muted small">Create and manage your job and internship posts.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>Manage Jobs</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Manage Applicants -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Company" asp-action="ManageApplicants" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="bg-info bg-opacity-10 text-info rounded-3 d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                                    <i class="bi bi-people fs-4"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-info bg-opacity-10 text-info px-3 py-2">@ViewBag.JobPostCount</span>
+                            </div>
+                            <h5 class="fw-bold">Manage Applicants</h5>
+                            <p class="text-muted small">View and manage applications submitted by candidates.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>View Applicants</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Interview List -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Company" asp-action="InterviewApplicants" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px; height:50px;">
+                                <i class="bi bi-calendar-check fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Interview List</h5>
+                            <p class="text-muted small">View scheduled interviews with candidates.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>View Interviews</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Rejected Applicants -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a asp-controller="Company" asp-action="RejectedApplicants" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card border-0 rounded-4 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 d-flex align-items-center justify-content-center mb-4" style="width:50px; height:50px;">
+                                <i class="bi bi-person-x fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Rejected Applicants</h5>
+                            <p class="text-muted small">View applications that were rejected.</p>
+                            <div class="d-flex justify-content-between align-items-center dotted-divider pt-3 text-primary fw-semibold small">
+                                <span>View Rejected</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Dashboard Background */
+    .dashboard-section {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #E5E7F2;
+    }
+
+    /* Dashboard Card */
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Gradient Top Border */
+    .dashboard-card::before {
+        content: "";
+        display: block;
+        height: 5px;
+        background: linear-gradient(90deg, #6c4bff, #00c2a8);
+    }
+
+    /* Hover Animation */
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(108, 75, 255, 0.18) !important;
+    }
+
+    .dotted-divider {
+        position: relative;
+        height: 0;
+        margin: 0 1.25rem;
+        border-top: 2px dashed #e3e5f2;
+    }
+</style>

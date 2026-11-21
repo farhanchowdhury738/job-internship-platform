@@ -1,0 +1,331 @@
+﻿@model IEnumerable<Job.Models.CompanyJobPost>
+
+@{
+    ViewData["Title"] = "Home";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 0;
+    int totalJobs = ViewBag.TotalJobs ?? 0;
+    int pageSize = ViewBag.PageSize ?? 12;
+}
+
+<!-- Job Listing Section -->
+<section class="jobs-section">
+    <div class="container py-5">
+
+        <!-- Section Heading -->
+        <div class="mb-4">
+            <h2 class="fw-bold">Latest Job Opportunities</h2>
+            <p class="text-muted">Explore the latest jobs and internship opportunities.</p>
+        </div>
+
+        <!-- Job Cards -->
+        <div class="row g-3">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var job in Model)
+                {
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div class="ticket h-100">
+
+                            <!-- Top Part -->
+                            <div class="ticket-top">
+                                <div class="ticket-icon"><i class="bi bi-briefcase"></i></div>
+                                <span class="ticket-type">@job.JobType</span>
+                                <h5 class="ticket-title">@job.JobTitle</h5>
+                                <span class="ticket-cat"><i class="bi bi-tag"></i> @(job.JobCategory?.CategoryName ?? "Not specified")</span>
+                            </div>
+
+                            <!-- Perforated Divider -->
+                            <div class="ticket-divider" aria-hidden="true"></div>
+
+                            <!-- Bottom Part -->
+                            <div class="ticket-bottom">
+                                <div class="ticket-deadline">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <div>
+                                        <small>Deadline</small>
+                                        <strong>@job.ApplicationDeadline.ToString("dd MMM yyyy")</strong>
+                                    </div>
+                                </div>
+
+                                <a asp-controller="Home" asp-action="Details" asp-route-id="@job.JobPostId" class="ticket-btn">
+                                    Details <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- No Jobs Available -->
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-briefcase fs-1 text-muted"></i>
+                    <h5 class="fw-bold mt-3">No Jobs Available</h5>
+                    <p class="text-muted">There are currently no published job posts.</p>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages > 1)
+        {
+            <div class="d-flex flex-column align-items-center mt-5">
+
+                <!-- Job Count -->
+                <p class="text-muted small mb-3">
+                    Showing @(((currentPage - 1) * pageSize) + 1) - @Math.Min(currentPage * pageSize, totalJobs) of @totalJobs jobs
+                </p>
+
+                <nav aria-label="Job pagination">
+                    <ul class="pagination pagination-sm gap-2 mb-0">
+
+                        <!-- Previous -->
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link rounded-3" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-pageSize="@pageSize">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <a class="page-link rounded-3" asp-controller="Home" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize">@i</a>
+                            </li>
+                        }
+
+                        <!-- Next -->
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link rounded-3" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-pageSize="@pageSize">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        }
+
+    </div>
+</section>
+
+<style>
+    /* Main Background */
+    .jobs-section {
+        background-color: #E5E7F2;
+    }
+
+    /* Ticket Card */
+    .ticket {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 1.25rem;
+        box-shadow: 0 6px 20px rgba(27,31,59,.07);
+        overflow: hidden;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+        .ticket::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 5px;
+            background: linear-gradient(90deg,#6c4bff,#00c2a8);
+        }
+
+        .ticket:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 34px rgba(108,75,255,.18);
+        }
+
+    /* Top Section */
+    .ticket-top {
+        position: relative;
+        flex: 1;
+        padding: 1.75rem 1.5rem 1.25rem;
+    }
+
+    /* Job Icon */
+    .ticket-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: #f3f1ff;
+        color: #6c4bff;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        transition: background .3s ease,color .3s ease;
+    }
+
+    .ticket:hover .ticket-icon {
+        background: #6c4bff;
+        color: #fff;
+    }
+
+    /* Job Type */
+    .ticket-type {
+        position: absolute;
+        top: 1.75rem;
+        right: 1.5rem;
+        padding: .3rem .75rem;
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .03em;
+        color: #007f6e;
+        background: rgba(0,194,168,.12);
+    }
+
+    /* Job Title */
+    .ticket-title {
+        font-weight: 700;
+        color: #1b1f3b;
+        line-height: 1.35;
+        margin-bottom: .75rem;
+    }
+
+    /* Job Category */
+    .ticket-cat {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        font-size: .82rem;
+        color: #6b7090;
+    }
+
+    /* Perforated Divider */
+    .ticket-divider {
+        position: relative;
+        height: 0;
+        margin: 0 1.25rem;
+        border-top: 2px dashed #e3e5f2;
+    }
+
+        .ticket-divider::before, .ticket-divider::after {
+            content: "";
+            position: absolute;
+            top: -14px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #E5E7F2;
+        }
+
+        .ticket-divider::before {
+            left: -2.1rem;
+        }
+
+        .ticket-divider::after {
+            right: -2.1rem;
+        }
+
+    /* Bottom Section */
+    .ticket-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: 1.1rem 1.5rem 1.4rem;
+    }
+
+    /* Deadline */
+    .ticket-deadline {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        color: #6c4bff;
+        font-size: 1.1rem;
+    }
+
+        .ticket-deadline small {
+            display: block;
+            color: #8a8fae;
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .ticket-deadline strong {
+            display: block;
+            color: #1b1f3b;
+            font-size: .88rem;
+        }
+
+    /* Details Button */
+    .ticket-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .5rem 1.1rem;
+        border-radius: 999px;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #1b1f3b;
+        background: #f3f1ff;
+        transition: background .3s ease,color .3s ease,gap .3s ease;
+    }
+
+        .ticket-btn:hover {
+            gap: .7rem;
+            color: #fff;
+            background: linear-gradient(90deg,#6c4bff,#8b6dff);
+        }
+
+    /* Pagination */
+    .pagination .page-link {
+        min-width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e3e5f2;
+        color: #6c4bff;
+        background: #fff;
+        font-weight: 600;
+        box-shadow: none;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: #6c4bff;
+        border-color: #6c4bff;
+        color: #fff;
+    }
+
+    .pagination .page-link:hover {
+        background: #f3f1ff;
+        color: #6c4bff;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #adb0c0;
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const width = window.innerWidth;
+        const pageSize = width < 768 ? 6 : width < 992 ? 9 : 12;
+        const url = new URL(window.location.href);
+        const currentPageSize = url.searchParams.get("pageSize");
+
+        if (currentPageSize != pageSize) {
+            url.searchParams.set("pageSize", pageSize);
+            url.searchParams.set("page", 1);
+            window.location.replace(url.toString());
+            return;
+        }
+
+        // Hide query parameters from browser URL
+        if (url.search) {
+            window.history.replaceState({}, document.title, url.pathname);
+        }
+    });
+</script>
