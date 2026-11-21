@@ -1,149 +1,80 @@
-# Job & Internship Platform
+# HireLink – Job & Internship Platform
 
-A full-stack web application that connects **students/job seekers with companies**. Job seekers can search and apply for jobs or internships, while recruiters can post opportunities and manage applications.
+**HireLink** is a web-based job and internship platform developed using ASP.NET Core MVC. It connects job seekers with companies through a centralized platform where users can explore opportunities, apply for jobs, and manage recruitment activities.
 
----
+The platform provides separate dashboards for Job Seekers, Companies, and Administrators to ensure role-based access and efficient management.
 
-## 📌 Project Overview
+## User Roles
 
-The **Job & Internship Platform** is designed to simplify the recruitment process by providing a centralized platform where:
-
-- Job seekers can create profiles, upload CVs, search for opportunities, and apply online.
-- Recruiters can create company profiles, post jobs/internships, and manage applicants.
-- Administrators can manage users, companies, jobs, and system reports.
-
----
-
-## 🎯 Objectives
-
-- Make job and internship searching easier.
-- Provide an online application system.
-- Help recruiters manage candidates efficiently.
-- Centralize job and internship opportunities.
-- Provide secure role-based access.
-
----
-
-## 👥 User Roles
-
-### 👨‍💻 Job Seeker
-- Register and login
-- Create and update profile
-- Upload CV/Resume
-- Search and filter jobs
-- Apply for jobs/internships
-- Save jobs
-- Track application status
-- Receive notifications
-
-### 🏢 Recruiter
-- Create company profile
-- Post jobs and internships
-- Edit/delete job posts
-- View applicants
-- Manage application status
-- Receive notifications
-
-### 👑 Admin
-- Manage users
-- Manage companies
-- Manage job posts
-- Manage reports
-- Monitor platform activities
-
----
-
-## ✨ Key Features
-
-- 🔐 JWT Authentication
-- 👥 Role-Based Authorization
-- 💼 Job & Internship Posting
-- 🔎 Search, Filter & Sort
-- 📄 CV/Resume Upload
-- 📝 Online Applications
-- 📊 Application Status Tracking
-- ⭐ Saved Jobs
-- 🔔 Notifications
-- 🛠️ Admin Dashboard
-- 🏢 Company Profiles
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technology |
+| Role | Responsibilities |
 |---|---|
-| Frontend | ASP.NET Core MVC + Razor Views |
-| Styling | Tailwind CSS / Bootstrap |
-| Backend | ASP.NET Core MVC |
-| Language | C# |
-| Database | SQL Server |
-| ORM | Entity Framework Core |
-| Authentication | ASP.NET Core Identity |
-| Client-side | JavaScript / AJAX |
-| API Documentation | Swagger (if APIs are added) |
-| Version Control | Git & GitHub |
+| Job Seeker | Browse jobs and manage applications |
+| Company | Manage job posts and applicants |
+| Admin | Monitor users and manage platform activities |
 
----
+## Key Features
 
-## 🗄️ Main Database Entities
+### Job Seeker
+- Apply for jobs and track application status.
+
+### Company
+- Create and manage job postings.
+- Review applicants and update application status.
+
+### Admin
+- Monitor active users, sessions, and login history.
+
+## Technology Stack
+
+**Backend**
+- C#
+- ASP.NET Core MVC
+- Entity Framework Core
+- SQL Server
+
+**Frontend**
+- HTML5 & CSS3
+- Bootstrap & Bootstrap Icons
+- JavaScript & jQuery
+
+**Development Tools**
+- Visual Studio
+- SQL Server Management Studio (SSMS)
+
+## Project Structure
 
 ```text
-Users
-Students
-Companies
-Jobs
-Applications
-Resumes
-Skills
-SavedJobs
-Notifications
-Reports
+HireLink/
+│
+├── Controllers/
+├── Models/
+├── Views/
+│   ├── Account/
+│   ├── Admin/
+│   ├── Company/
+│   ├── Home/
+│   └── JobSeeker/
+│
+├── Data/
+├── wwwroot/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── appsettings.json
+├── Program.cs
+└── Job.csproj
 ```
+## Project Architecture
+- **Controllers:** Handle requests and application logic for Job Seekers, Companies, and Admins.
+- **Models:** Define application entities such as Users, Job Posts, Job Applications.
+- **Views:** Provide separate interfaces and dashboards for each user role.
+- **EF:** Uses Entity Framework Core to manage database operations.
+- **Database:** Microsoft SQL Server stores user, job, application, and login history data.
 
+### Application Flow
+**User → Controller → Model / Entity Framework Core → SQL Server → View → User**
 
----
-
-## 🏗️ Project Architecture
-
-```text
-Job-Internship-Platform/
-│
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── services/
-│   ├── types/
-│   └── public/
-│
-├── backend/
-│   ├── Controllers/
-│   ├── Models/
-│   ├── DTOs/
-│   ├── Services/
-│   ├── Data/
-│   ├── Middleware/
-│   └── Program.cs
-│
-└── README.md
-```
-
----
-
-## 🔮 Future Improvements
-
-- AI-based job recommendations
-- AI resume analysis
-- Email notifications
-- Real-time chat between recruiters and candidates
-- Interview scheduling
-- Advanced analytics dashboard
-- Job recommendation based on skills
-- Online interview integration
-
----
-
-## 📄 License
-
-This project is developed for **educational and academic purposes**.
-
+### Prerequisites for this project
+- Visual Studio
+- SQL Server Management Studio (SSMS)
